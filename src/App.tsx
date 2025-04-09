@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   ChevronDown, 
   Calendar, 
@@ -19,12 +20,223 @@ import {
   PalmtreeIcon,
   CalendarClock,
   Building,
-  Plane
+  Plane,
+  Trophy,
+  Flag as GolfIcon
 } from 'lucide-react';
+import GalleryPage from './GalleryPage';
+
+// ScrollToTop component
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+};
 
 // Calendar Booking Modal Component
 const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
   if (!isOpen) return null;
+  
+  const today = new Date();
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    // Start with today's date, but set it to the next available day if needed
+    const date = new Date();
+    
+    // If all today's time slots are less than 3 hours away, move to tomorrow
+    const currentHour = date.getHours();
+    const currentMinute = date.getMinutes();
+    
+    // If current time + 3 hours is past the last time slot (4:30 PM)
+    if (currentHour >= 13 || (currentHour === 13 && currentMinute >= 30)) {
+      date.setDate(date.getDate() + 1);
+    }
+    
+    return date;
+  });
+  const [selectedTime, setSelectedTime] = useState<string | null>(() => {
+    // Default time selection based on current time
+    const currentHour = today.getHours();
+    const currentMinute = today.getMinutes();
+    
+    // Pre-select the first available time slot that's at least 3 hours in the future
+    const timeSlots = ["9:00 AM", "10:30 AM", "12:00 PM", "1:30 PM", "3:00 PM", "4:30 PM"];
+    const hourToTimeSlot = [9, 10.5, 12, 13.5, 15, 16.5]; // equivalent hours for comparison
+    
+    const currentTimeIn24Format = currentHour + (currentMinute / 60);
+    
+    // Find the first available time slot that's at least 3 hours ahead
+    for (let i = 0; i < timeSlots.length; i++) {
+      if (hourToTimeSlot[i] >= currentTimeIn24Format + 3) {
+        return timeSlots[i];
+      }
+    }
+    
+    // If no available slots today, default to first slot for next day
+    return "9:00 AM";
+  });
+  const [viewDate, setViewDate] = useState<Date>(selectedDate);
+  
+  // Format date helpers
+  const formatMonth = (date: Date) => {
+    return date.toLocaleString('default', { month: 'long' });
+  };
+  
+  // Navigate to previous/next month
+  const goToPreviousMonth = () => {
+    const newDate = new Date(viewDate);
+    newDate.setMonth(newDate.getMonth() - 1);
+    setViewDate(newDate);
+  };
+  
+  const goToNextMonth = () => {
+    const newDate = new Date(viewDate);
+    newDate.setMonth(newDate.getMonth() + 1);
+    setViewDate(newDate);
+  };
+  
+  // Get days in month
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+  
+  // Get day of week for first day of month (0 = Sunday, 6 = Saturday)
+  const getFirstDayOfMonth = (year: number, month: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+  
+  // Check if a date is in the past
+  const isDateInPast = (year: number, month: number, day: number) => {
+    const date = new Date(year, month, day);
+    date.setHours(0, 0, 0, 0);
+    
+    const compareDate = new Date();
+    compareDate.setHours(0, 0, 0, 0);
+    
+    return date < compareDate;
+  };
+  
+  // Generate calendar days
+  const generateCalendarDays = () => {
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    
+    const daysInMonth = getDaysInMonth(year, month);
+    const firstDay = getFirstDayOfMonth(year, month);
+    
+    // Create blank spaces for days before the first day of the month
+    const blanks = Array(firstDay).fill(null);
+    
+    // Create entries for each day of the month
+    const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    
+    return [...blanks, ...days];
+  };
+  
+  // Handle day selection
+  const handleDaySelect = (day: number) => {
+    const newDate = new Date(viewDate);
+    newDate.setDate(day);
+    setSelectedDate(newDate);
+    
+    // If changing to today, ensure selected time is valid (at least 3 hours from now)
+    if (isToday(newDate)) {
+      const currentHour = today.getHours();
+      const currentMinute = today.getMinutes();
+      const currentTimeIn24Format = currentHour + (currentMinute / 60);
+      
+      // Find first available time slot
+      const timeSlots = ["9:00 AM", "10:30 AM", "12:00 PM", "1:30 PM", "3:00 PM", "4:30 PM"];
+      const hourToTimeSlot = [9, 10.5, 12, 13.5, 15, 16.5];
+      
+      let availableTime = null;
+      for (let i = 0; i < timeSlots.length; i++) {
+        if (hourToTimeSlot[i] >= currentTimeIn24Format + 3) {
+          availableTime = timeSlots[i];
+          break;
+        }
+      }
+      
+      setSelectedTime(availableTime);
+    } else if (!isTimeSlotAvailable(selectedTime)) {
+      // Reset to first time slot if current selection isn't available
+      setSelectedTime("9:00 AM");
+    }
+  };
+  
+  // Check if a day is today
+  const isToday = (date: Date) => {
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+  
+  // Check if a day should be selectable
+  const isDaySelectable = (day: number | null) => {
+    if (day === null) return false;
+    
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    
+    // If in the past, it's not selectable
+    if (isDateInPast(year, month, day)) return false;
+    
+    // If it's today, check if any time slots are available
+    const date = new Date(year, month, day);
+    if (isToday(date)) {
+      const currentHour = today.getHours();
+      const currentMinute = today.getMinutes();
+      const currentTimeIn24Format = currentHour + (currentMinute / 60);
+      
+      // The earliest time slot is 9:00 AM (9)
+      // The latest time slot is 4:30 PM (16.5)
+      
+      // If current time + 3 hours is past the last time slot (4:30 PM)
+      if (currentTimeIn24Format + 3 > 16.5) {
+        return false;
+      }
+    }
+    
+    return true;
+  };
+  
+  // Check if a day is the selected day
+  const isSelectedDay = (day: number | null) => {
+    if (day === null) return false;
+    
+    return (
+      selectedDate.getDate() === day &&
+      selectedDate.getMonth() === viewDate.getMonth() &&
+      selectedDate.getFullYear() === viewDate.getFullYear()
+    );
+  };
+  
+  // Check if a time slot is available (at least 3 hours in advance)
+  const isTimeSlotAvailable = (timeSlot: string | null) => {
+    if (!timeSlot) return false;
+    
+    // Only need to check for today
+    if (!isToday(selectedDate)) return true;
+    
+    const currentHour = today.getHours();
+    const currentMinute = today.getMinutes();
+    const currentTimeIn24Format = currentHour + (currentMinute / 60);
+    
+    // Convert time slots to 24-hour format for comparison
+    const timeSlots = ["9:00 AM", "10:30 AM", "12:00 PM", "1:30 PM", "3:00 PM", "4:30 PM"];
+    const hourToTimeSlot = [9, 10.5, 12, 13.5, 15, 16.5];
+    
+    const slotIndex = timeSlots.indexOf(timeSlot);
+    if (slotIndex === -1) return false;
+    
+    // Check if the time slot is at least 3 hours ahead of current time
+    return hourToTimeSlot[slotIndex] >= (currentTimeIn24Format + 3);
+  };
   
   // Close modal when clicking outside of content
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -32,6 +244,31 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
       onClose();
     }
   };
+  
+  const calendarDays = generateCalendarDays();
+  
+  // Get available time slots based on selected date
+  const getAvailableTimeSlots = () => {
+    const timeSlots = ["9:00 AM", "10:30 AM", "12:00 PM", "1:30 PM", "3:00 PM", "4:30 PM"];
+    
+    // If not today, all slots are available
+    if (!isToday(selectedDate)) {
+      return timeSlots;
+    }
+    
+    // For today, filter out slots that are less than 3 hours from now
+    const currentHour = today.getHours();
+    const currentMinute = today.getMinutes();
+    const currentTimeIn24Format = currentHour + (currentMinute / 60);
+    
+    const hourToTimeSlot = [9, 10.5, 12, 13.5, 15, 16.5];
+    
+    return timeSlots.filter((_, index) => {
+      return hourToTimeSlot[index] >= currentTimeIn24Format + 3;
+    });
+  };
+  
+  const availableTimeSlots = getAvailableTimeSlots();
   
   return (
     <div className="fixed inset-0 bg-dark-800/80 z-50 flex justify-end" onClick={handleBackdropClick}>
@@ -53,42 +290,72 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
         <div className="p-6">
           <div className="mb-8">
             <h3 className="text-lg font-medium text-white mb-2">Select a Date & Time</h3>
-            <p className="text-white/70 mb-6">Choose when you'd like to tour The Plantation House venues.</p>
+            <p className="text-white/70 mb-6">Choose when you'd like to tour The Plantation House venues. Tours must be scheduled at least 3 hours in advance.</p>
             
             <div className="bg-dark-700 rounded-lg p-4 mb-6">
+              {/* Month and Year Navigation */}
+              <div className="flex justify-between items-center mb-4">
+                <button 
+                  onClick={goToPreviousMonth}
+                  className="text-white p-1 rounded hover:bg-dark-600 transition-colors duration-300"
+                  disabled={viewDate.getMonth() === today.getMonth() && viewDate.getFullYear() === today.getFullYear()}
+                >
+                  <ChevronDown className="h-5 w-5 transform rotate-90" />
+                </button>
+                <h4 className="text-white font-medium">
+                  {formatMonth(viewDate)} {viewDate.getFullYear()}
+                </h4>
+                <button 
+                  onClick={goToNextMonth}
+                  className="text-white p-1 rounded hover:bg-dark-600 transition-colors duration-300"
+                >
+                  <ChevronDown className="h-5 w-5 transform -rotate-90" />
+                </button>
+              </div>
+              
               <div className="grid grid-cols-7 gap-2 mb-4">
                 {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
                   <div key={i} className="text-center text-white/70 text-sm py-2">{day}</div>
                 ))}
                 
-                {Array(35).fill(0).map((_, i) => {
-                  const day = i - 3; // Offset to start month correctly
-                  return (
-                    <div 
-                      key={i} 
-                      className={`
-                        text-center rounded-md py-2 text-sm cursor-pointer
-                        ${day <= 0 ? 'text-white/30' : 'text-white hover:bg-olive-600/30'}
-                        ${day === 15 ? 'bg-olive-600 hover:bg-olive-500 text-white' : ''}
-                      `}
-                    >
-                      {day > 0 && day <= 31 ? day : ''}
-                    </div>
-                  );
-                })}
+                {calendarDays.map((day, i) => (
+                  <div 
+                    key={i} 
+                    className={`
+                      text-center rounded-md py-2 text-sm
+                      ${day === null ? 'invisible' : 'cursor-pointer'}
+                      ${!isDaySelectable(day) ? 'text-white/30 cursor-not-allowed' : 'text-white hover:bg-olive-600/30'}
+                      ${isSelectedDay(day) ? 'bg-olive-600 hover:bg-olive-500 text-white' : ''}
+                    `}
+                    onClick={() => day !== null && isDaySelectable(day) ? handleDaySelect(day) : null}
+                  >
+                    {day}
+                  </div>
+                ))}
               </div>
               
               <div className="mt-6 space-y-2">
-                <h4 className="text-white font-medium mb-3">Available Times - July 15, 2025</h4>
+                <h4 className="text-white font-medium mb-3">
+                  Available Times - {formatMonth(selectedDate)} {selectedDate.getDate()}, {selectedDate.getFullYear()}
+                </h4>
                 <div className="grid grid-cols-3 gap-2">
-                  {["9:00 AM", "10:30 AM", "12:00 PM", "1:30 PM", "3:00 PM", "4:30 PM"].map((time, i) => (
-                    <div 
-                      key={i} 
-                      className="bg-dark-600 text-white hover:bg-olive-600 transition-colors duration-300 rounded-md py-2 px-3 text-center cursor-pointer text-sm"
-                    >
-                      {time}
+                  {availableTimeSlots.length > 0 ? (
+                    availableTimeSlots.map((time, i) => (
+                      <div 
+                        key={i} 
+                        className={`bg-dark-600 text-white rounded-md py-2 px-3 text-center cursor-pointer text-sm transition-colors duration-300
+                          ${selectedTime === time ? 'bg-olive-600' : 'hover:bg-olive-600/70'}
+                        `}
+                        onClick={() => setSelectedTime(time)}
+                      >
+                        {time}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-3 text-center text-white/70 py-4">
+                      No available times for this date. Please select another date.
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
@@ -184,20 +451,53 @@ const Navigation = () => {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-dark-800/95 backdrop-blur-sm shadow-md py-2' : 'bg-transparent py-4'}`}>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
-          <a href="#" className="z-50">
+          <Link to="/" className="z-50">
             <img 
               src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/PH_Logo_Butterfly-retina-1-400x65.png" 
               alt="The Plantation House" 
               className={`h-8 md:h-10 transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-90 hover:opacity-100'}`}
             />
-          </a>
+          </Link>
           
           <div className="hidden lg:flex items-center space-x-6">
-            {['Venues', 'Experience', 'Cuisine', 'Gallery', 'Concierge', 'Contact'].map((item, index) => (
+            <Link 
+              to="/"
+              className="relative font-medium text-sm transition-colors duration-300 group text-white hover:text-olive-400"
+            >
+              <span>Home</span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-olive-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            {['Venues', 'Experience'].map((item) => (
               <a 
                 key={item} 
-                href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} 
-                className={`relative font-medium text-sm transition-colors duration-300 group text-white hover:text-olive-400`}
+                href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
+                className="relative font-medium text-sm transition-colors duration-300 group text-white hover:text-olive-400"
+              >
+                <span>{item}</span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-olive-600 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+            ))}
+            <a 
+              href="https://www.theplantationhouse.com/" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative font-medium text-sm transition-colors duration-300 group text-white hover:text-olive-400"
+            >
+              <span>Cuisine</span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-olive-600 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <Link 
+              to="/gallery" 
+              className="relative font-medium text-sm transition-colors duration-300 group text-white hover:text-olive-400"
+            >
+              <span>Gallery</span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-olive-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            {['Concierge', 'Contact'].map((item) => (
+              <a 
+                key={item} 
+                href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
+                className="relative font-medium text-sm transition-colors duration-300 group text-white hover:text-olive-400"
               >
                 <span>{item}</span>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-olive-600 transition-all duration-300 group-hover:w-full"></span>
@@ -227,10 +527,43 @@ const Navigation = () => {
       {/* Mobile Menu */}
       <div className={`fixed inset-0 bg-dark-800/95 flex flex-col items-center justify-center transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
         <div className="flex flex-col items-center space-y-6">
-          {['Venues', 'Experience', 'Cuisine', 'Gallery', 'Concierge', 'Contact'].map((item) => (
+          <Link 
+            to="/"
+            className="text-white text-xl font-medium transition-colors hover:text-olive-400"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Home
+          </Link>
+          {['Venues', 'Experience'].map((item) => (
             <a 
               key={item} 
-              href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} 
+              href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
+              className="text-white text-xl font-medium transition-colors hover:text-olive-400"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {item}
+            </a>
+          ))}
+          <a 
+            href="https://www.theplantationhouse.com/" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white text-xl font-medium transition-colors hover:text-olive-400"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Cuisine
+          </a>
+          <Link 
+            to="/gallery" 
+            className="text-white text-xl font-medium transition-colors hover:text-olive-400"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Gallery
+          </Link>
+          {['Concierge', 'Contact'].map((item) => (
+            <a 
+              key={item} 
+              href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
               className="text-white text-xl font-medium transition-colors hover:text-olive-400"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -564,14 +897,13 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-center bg-dark-700/90 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl">
-            <div className="lg:w-2/5 h-80 lg:h-auto relative">
+          <div className="flex flex-col lg:flex-row bg-dark-700/90 backdrop-blur-sm rounded-xl overflow-hidden shadow-2xl">
+            <div className="lg:w-2/5 h-96 lg:h-auto overflow-hidden">
               <img 
-                src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/Photo-10.jpg"
+                src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/Photo-8.jpg"
                 alt="Wedding Concierge Service"
-                className="absolute inset-0 w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-dark-800/70 via-dark-800/40 to-transparent"></div>
             </div>
             
             <div className="lg:w-3/5 p-8 lg:p-12">
@@ -586,13 +918,13 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
                 When you choose The Plantation House, you don't just get a venue - you gain a dedicated Wedding Concierge who leverages our 30+ years as a West Maui institution to create your perfect celebration. Our deep island connections mean unparalleled service for you and your guests.
               </p>
               
-              <div className="grid md:grid-cols-2 gap-6 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                 <div className="bg-dark-600/50 rounded-lg p-5">
                   <div className="flex items-start mb-3">
                     <Building className="h-6 w-6 text-olive-500 mr-3 flex-shrink-0" />
-                    <h3 className="text-white font-medium text-lg">Venue Coordination</h3>
+                    <h3 className="text-white font-medium">Venue Coordination</h3>
                   </div>
-                  <p className="text-white/70">
+                  <p className="text-white/70 text-sm">
                     Seamless management of all venue spaces, setup coordination, and weather contingency planning.
                   </p>
                 </div>
@@ -600,9 +932,9 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
                 <div className="bg-dark-600/50 rounded-lg p-5">
                   <div className="flex items-start mb-3">
                     <Plane className="h-6 w-6 text-olive-500 mr-3 flex-shrink-0" />
-                    <h3 className="text-white font-medium text-lg">Guest Services</h3>
+                    <h3 className="text-white font-medium">Guest Services</h3>
                   </div>
-                  <p className="text-white/70">
+                  <p className="text-white/70 text-sm">
                     Hotel room blocks, transportation arrangement, and local activity recommendations for all guests.
                   </p>
                 </div>
@@ -610,9 +942,9 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
                 <div className="bg-dark-600/50 rounded-lg p-5">
                   <div className="flex items-start mb-3">
                     <CalendarClock className="h-6 w-6 text-olive-500 mr-3 flex-shrink-0" />
-                    <h3 className="text-white font-medium text-lg">Event Timeline</h3>
+                    <h3 className="text-white font-medium">Event Timeline</h3>
                   </div>
-                  <p className="text-white/70">
+                  <p className="text-white/70 text-sm">
                     Detailed planning of your entire wedding day and coordination with all vendors.
                   </p>
                 </div>
@@ -620,16 +952,16 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
                 <div className="bg-dark-600/50 rounded-lg p-5">
                   <div className="flex items-start mb-3">
                     <PalmtreeIcon className="h-6 w-6 text-olive-500 mr-3 flex-shrink-0" />
-                    <h3 className="text-white font-medium text-lg">Island Connection</h3>
+                    <h3 className="text-white font-medium">Island Connection</h3>
                   </div>
-                  <p className="text-white/70">
+                  <p className="text-white/70 text-sm">
                     Access to Maui's best vendors, exclusive experiences, and local expertise through our extensive network.
                   </p>
                 </div>
               </div>
               
-              <div className="flex items-center justify-between p-5 bg-olive-600/20 rounded-lg">
-                <div className="text-white">
+              <div className="flex flex-col sm:flex-row items-center justify-between p-5 bg-olive-600/20 rounded-lg">
+                <div className="text-white mb-4 sm:mb-0">
                   <p className="font-medium">Ready to meet your Wedding Concierge?</p>
                   <p className="text-white/70 text-sm mt-1">Book a tour today and begin your planning journey</p>
                 </div>
@@ -704,7 +1036,7 @@ const ContactSection = () => {
       {/* Flower pattern overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="h-full w-full" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='24' viewBox='0 0 88 24'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M13 0h1v8h-1V0zm0 16h1v8h-1v-8zM6 0h1v8H6V0zm0 16h1v8H6v-8zM0 0h1v8H0V0zm0 16h1v8H0v-8zM19 0h1v8h-1V0zm0 16h1v8h-1v-8zM38 0h1v8h-1V0zm0 16h1v8h-1v-8zM31 0h1v8h-1V0zm0 16h1v8h-1v-8zM25 0h1v8h-1V0zm0 16h1v8h-1v-8zM44 0h1v8h-1V0zm0 16h1v8h-1v-8zM63 0h1v8h-1V0zm0 16h1v8h-1v-8zM56 0h1v8h-1V0zm0 16h1v8h-1v-8zM50 0h1v8h-1V0zm0 16h1v8h-1v-8zM69 0h1v8h-1V0zm0 16h1v8h-1v-8zM88 0h1v8h-1V0zm0 16h1v8h-1v-8zM81 0h1v8h-1V0zm0 16h1v8h-1v-8zM75 0h1v8h-1V0zm0 16h1v8h-1v-8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='24' viewBox='0 0 88 24'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M13 0h1v8h-1V0zm0 16h1v8H6v-8zM6 0h1v8H6V0zm0 16h1v8H6v-8zM0 0h1v8H0V0zm0 16h1v8H0v-8zM19 0h1v8h-1V0zm0 16h1v8h-1v-8zM38 0h1v8h-1V0zm0 16h1v8h-1v-8zM31 0h1v8h-1V0zm0 16h1v8h-1v-8zM25 0h1v8h-1V0zm0 16h1v8h-1v-8zM44 0h1v8h-1V0zm0 16h1v8h-1v-8zM63 0h1v8h-1V0zm0 16h1v8h-1v-8zM56 0h1v8h-1V0zm0 16h1v8h-1v-8zM50 0h1v8h-1V0zm0 16h1v8h-1v-8zM69 0h1v8h-1V0zm0 16h1v8h-1v-8zM88 0h1v8h-1V0zm0 16h1v8h-1v-8zM81 0h1v8h-1V0zm0 16h1v8h-1v-8zM75 0h1v8h-1V0zm0 16h1v8h-1v-8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }}></div>
       </div>
       
@@ -808,10 +1140,9 @@ const ContactSection = () => {
                 alt="Wedding at The Plantation House"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-10000 animate-subtle-zoom-slow"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-800 via-dark-800/50 to-dark-800/20 transition-opacity duration-300 hover:bg-dark-800/40"></div>
               
-              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-dark-800/90 to-transparent">
-                <div className="text-white space-y-4">
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <div className="text-white space-y-4 bg-dark-800/50 backdrop-blur-sm p-4 rounded-lg">
                   <div className="flex items-start group">
                     <MapPin className="h-5 w-5 mr-3 text-olive-500 mt-1 flex-shrink-0 group-hover:text-olive-400 transition-colors duration-300" />
                     <div>
@@ -925,9 +1256,8 @@ const Footer = () => {
               West Maui's premier wedding venue with breathtaking ocean views, exceptional service, and a dedicated Wedding Concierge team.
             </p>
             <div className="flex space-x-6">
-              <a href="#" className="text-white/70 hover:text-olive-400 transition-colors duration-300">Facebook</a>
-              <a href="#" className="text-white/70 hover:text-olive-400 transition-colors duration-300">Instagram</a>
-              <a href="#" className="text-white/70 hover:text-olive-400 transition-colors duration-300">Pinterest</a>
+              <a href="https://www.facebook.com/plantationhousemaui" className="text-white/70 hover:text-olive-400 transition-colors duration-300">Facebook</a>
+              <a href="https://www.instagram.com/plantationhousemaui" className="text-white/70 hover:text-olive-400 transition-colors duration-300">Instagram</a>
             </div>
           </div>
           
@@ -952,10 +1282,41 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-medium mb-6">Quick Links</h3>
             <ul className="space-y-3">
-              {['Venues', 'Experience', 'Cuisine', 'Gallery', 'Concierge', 'Contact'].map((item) => (
+              {['Venues', 'Experience'].map((item) => (
                 <li key={item}>
                   <a 
-                    href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} 
+                    href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
+                    className="text-white/80 hover:text-olive-400 transition-colors duration-300 flex items-center group"
+                  >
+                    <ChevronRight className="h-4 w-4 mr-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0" />
+                    <span>{item}</span>
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a 
+                  href="https://www.theplantationhouse.com/" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/80 hover:text-olive-400 transition-colors duration-300 flex items-center group"
+                >
+                  <ChevronRight className="h-4 w-4 mr-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0" />
+                  <span>Cuisine</span>
+                </a>
+              </li>
+              <li>
+                <Link 
+                  to="/gallery" 
+                  className="text-white/80 hover:text-olive-400 transition-colors duration-300 flex items-center group"
+                >
+                  <ChevronRight className="h-4 w-4 mr-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0" />
+                  <span>Gallery</span>
+                </Link>
+              </li>
+              {['Concierge', 'Contact'].map((item) => (
+                <li key={item}>
+                  <a 
+                    href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
                     className="text-white/80 hover:text-olive-400 transition-colors duration-300 flex items-center group"
                   >
                     <ChevronRight className="h-4 w-4 mr-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0" />
@@ -990,6 +1351,109 @@ const Footer = () => {
   );
 };
 
+// Gallery Section Preview Component
+const GallerySectionPreview = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <section id="gallery-preview" className="py-24 bg-gradient-to-b from-dark-800 to-dark-700 relative">
+      {/* Dotted pattern overlay */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div className="h-full w-full" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.5' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E")`,
+        }}></div>
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <h2 className="text-3xl md:text-4xl font-serif text-white text-center mb-16 relative">
+          <span className="inline-block relative">
+            Capture Your Perfect Moments
+            <span className="absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-olive-600"></span>
+          </span>
+        </h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="relative overflow-hidden rounded-lg shadow-lg group">
+            <img 
+              src="https://plantationhouseevents.com/sites/default/files/styles/gallery_full/public/gallery-images/ceremony-site-golf-course-3.jpg" 
+              alt="Molokai Lawn Ceremony" 
+              className="w-full h-64 object-cover transition-transform duration-1000 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-dark-800/90 via-dark-800/60 to-transparent flex flex-col justify-end p-4">
+              <h3 className="text-white font-medium">Molokai Lawn</h3>
+              <p className="text-white/80 text-sm">Oceanfront ceremonies with breathtaking views</p>
+            </div>
+          </div>
+          
+          <div className="relative overflow-hidden rounded-lg shadow-lg group">
+            <img 
+              src="https://plantationhouseevents.com/sites/default/files/styles/gallery_full/public/gallery-images/event-dining-room-1.jpg" 
+              alt="Main Dining Room" 
+              className="w-full h-64 object-cover transition-transform duration-1000 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-dark-800/90 via-dark-800/60 to-transparent flex flex-col justify-end p-4">
+              <h3 className="text-white font-medium">Main Dining Room</h3>
+              <p className="text-white/80 text-sm">Elegant indoor receptions with panoramic views</p>
+            </div>
+          </div>
+          
+          <div className="relative overflow-hidden rounded-lg shadow-lg group">
+            <img 
+              src="https://plantationhouseevents.com/sites/default/files/styles/gallery_full/public/gallery-images/dining-terrace-reception-1.jpg" 
+              alt="Dining Terrace" 
+              className="w-full h-64 object-cover transition-transform duration-1000 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-dark-800/90 via-dark-800/60 to-transparent flex flex-col justify-end p-4">
+              <h3 className="text-white font-medium">Dining Room Lanai</h3>
+              <p className="text-white/80 text-sm">Open-air dining with sunset ocean views</p>
+            </div>
+          </div>
+          
+          <div className="relative overflow-hidden rounded-lg shadow-lg group">
+            <img 
+              src="https://plantationhouseevents.com/sites/default/files/styles/gallery_full/public/gallery-images/steak-seafood-entree.jpg" 
+              alt="Gourmet Cuisine" 
+              className="w-full h-64 object-cover transition-transform duration-1000 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-dark-800/90 via-dark-800/60 to-transparent flex flex-col justify-end p-4">
+              <h3 className="text-white font-medium">Culinary Excellence</h3>
+              <p className="text-white/80 text-sm">Award-winning island-inspired cuisine</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-center mt-12">
+          <button 
+            onClick={() => navigate('/gallery')}
+            className="inline-flex items-center bg-olive-600 hover:bg-olive-500 text-white px-6 py-3 rounded-full transition-colors duration-300 transform hover:scale-105 shadow-md"
+          >
+            <Camera className="h-5 w-5 mr-2" />
+            <span>View Full Gallery</span>
+          </button>
+          <p className="text-white/60 mt-4 text-sm">Explore all our stunning venues and past celebrations</p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// HomePage Component 
+const HomePage = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
+  return (
+    <>
+      <HeroSection onScheduleTour={onScheduleTour} />
+      <IntroductionSection />
+      <TrustedVenueSection />
+      <WeddingSpacesSection />
+      <ExperienceSection />
+      <WeddingConciergeSection onScheduleTour={onScheduleTour} />
+      <TestimonialSection />
+      <ContactSection />
+    </>
+  );
+};
+
+// App Component
 function App() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   
@@ -998,20 +1462,21 @@ function App() {
   };
   
   return (
-    <div className="font-sans text-gray-900 bg-dark-800">
-      <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
-      <Navigation />
-      <HeroSection onScheduleTour={handleScheduleTour} />
-      <IntroductionSection />
-      <TrustedVenueSection />
-      <WeddingSpacesSection />
-      <ExperienceSection />
-      <WeddingConciergeSection onScheduleTour={handleScheduleTour} />
-      <TestimonialSection />
-      <ContactSection />
-      <FloatingCTA onScheduleTour={handleScheduleTour} />
-      <Footer />
-    </div>
+    <Router>
+      <div className="font-sans text-gray-900 bg-dark-800">
+        <ScrollToTop />
+        <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
+        <Navigation />
+        
+        <Routes>
+          <Route path="/" element={<HomePage onScheduleTour={handleScheduleTour} />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+        </Routes>
+        
+        <FloatingCTA onScheduleTour={handleScheduleTour} />
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
