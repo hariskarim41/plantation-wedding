@@ -8,7 +8,25 @@
     <meta name="description" content="Experience your dream wedding at The Plantation House in Maui with breathtaking ocean views, award-winning cuisine, and Hawaiian hospitality.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Removed Cormorant Garamond font import -->
+    <!-- Adobe Fonts (Typekit) for Gill Sans Nova -->
+    <link rel="stylesheet" href="https://use.typekit.net/xxxxxxx.css"> <!-- Replace xxxxxxx with your actual Adobe Fonts kit ID -->
+    <style>
+      /* Fallback for Gill Sans Nova if Adobe Fonts fails to load */
+      @font-face {
+        font-family: 'Gill Sans Nova';
+        src: local('Gill Sans Nova'), local('Gill Sans MT'), local('Gill Sans'), local('Gill Sans Std');
+        font-weight: 400;
+        font-style: normal;
+      }
+      
+      @font-face {
+        font-family: 'Gill Sans Nova';
+        src: local('Gill Sans Nova Bold'), local('Gill Sans MT Bold'), local('Gill Sans Bold'), local('Gill Sans Std Bold');
+        font-weight: 700;
+        font-style: normal;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

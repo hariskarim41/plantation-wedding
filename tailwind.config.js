@@ -44,8 +44,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        serif: ['Cormorant Garamond', 'serif'],
+        sans: ['"Gill Sans Nova"', 'Gill Sans', 'Gill Sans MT', 'sans-serif'],
+        serif: ['"Gill Sans Nova"', 'Gill Sans', 'Gill Sans MT', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

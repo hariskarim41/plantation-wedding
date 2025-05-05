@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base font styles */
+@layer base {
+  html {
+    font-family: 'Gill Sans Nova', 'Gill Sans', 'Gill Sans MT', sans-serif;
+  }
+}
+
 /* Custom aspect ratio utilities */
 .aspect-w-4 {
   position: relative;
