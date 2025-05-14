@@ -4,14 +4,14 @@ import { MapPin, Phone, Mail, Heart, ChevronRight } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-cream-50 text-dark-700 pt-16 pb-8 border-t border-olive-200">
+    <footer className="bg-cream-50 text-dark-700 pt-16 pb-8 border-t border-olive-200 force-gill-sans">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <div>
             <div className="mb-6">
               <div className="inline-block bg-cream-50 p-2 rounded">
                 <img 
-                  src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/PH_Logo_Butterfly-retina-1-400x65.png" 
+                  src="https://res.cloudinary.com/dyokodjrm/image/upload/v1747203557/PH_Logo_Black_Horizontal_bu7ppb.webp" 
                   alt="The Plantation House" 
                   className="h-12 mb-2 brightness-0"
                   style={{ filter: 'brightness(0)' }}

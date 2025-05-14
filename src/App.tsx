@@ -19,8 +19,7 @@ import {
   CalendarClock,
   Building,
   Plane,
-  Trophy,
-  GolfIcon
+  Trophy
 } from 'lucide-react';
 import GalleryPage from './GalleryPage';
 
@@ -33,10 +32,19 @@ import Footer from './components/Footer';
 import FloatingCTA from './components/FloatingCTA';
 import ContactSection from './components/ContactSection';
 
+// Add global styles
+const globalStyles = `
+  .gill-sans-nova-book {
+    font-family: "gill-sans-nova", "Gill Sans Nova Book", "Gill Sans Nova", "Gill Sans", sans-serif !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+  }
+`;
+
 // Introduction Section Component
 const IntroductionSection = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-cream-50 via-white to-cream-100 relative">
+    <section className="py-20 bg-gradient-to-b from-white to-[#f7f4f1] relative">
       {/* Decorative pattern overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="h-full w-full" style={{
@@ -46,8 +54,11 @@ const IntroductionSection = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl text-olive-800 mb-8 relative font-light">
-            <span className="inline-block relative">
+          <h2 
+            className="text-3xl md:text-4xl text-olive-800 mb-8 relative font-light italic"
+            style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+          >
+            <span className="inline-block relative" style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
               A West Maui Legacy Since 1991
               <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-olive-600"></span>
             </span>
@@ -79,11 +90,11 @@ const IntroductionSection = () => {
 const TrustedVenueSection = () => {
   return (
     <section className="py-24 bg-cream-50 relative">
-      {/* Leaf pattern overlay */}
+      {/* Woven texture pattern overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="h-full w-full" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM50 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235F653C' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-          backgroundSize: "100px 100px"
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%235F653C' fill-opacity='0.25' fill-rule='evenodd'%3E%3Cpath d='M0 0h22v22H0V0zm22 22h22v22H22V22z'/%3E%3Cpath d='M2 2h18v18H2V2zm22 0h18v18H24V2zM2 24h18v18H2V24zm22 0h18v18H24V24z'/%3E%3Cpath d='M4 4h14v14H4V4zm22 0h14v14H26V4zM4 26h14v14H4V26zm22 0h14v14H26V26z'/%3E%3Cpath d='M6 6h10v10H6V6zm22 0h10v10H28V6zM6 28h10v10H6V28zm22 0h10v10H28V28z'/%3E%3Cpath d='M8 8h6v6H8V8zm22 0h6v6H30V8zM8 30h6v6H8V30zm22 0h6v6H30V30z'/%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundSize: "44px 44px"
         }}></div>
       </div>
       
@@ -133,6 +144,7 @@ const WeddingSpacesSection = () => {
       description: 'Our signature outdoor space offering panoramic ocean views and breathtaking Maui sunsets, perfect for ceremonies and receptions up to 500 guests. This is our most popular venue choice, creating unforgettable moments as you exchange vows with the Pacific Ocean as your backdrop.',
       image: 'https://res.cloudinary.com/dyokodjrm/image/upload/v1746415605/The_scenic_golf_course_at_The_Plantation_House_provides_the_perfect_backdrop_to_complement_your_Maui_adventures._qukovi.webp',
       capacity: 500,
+      fontFamily: '"Gill Sans Nova Book", "Gill Sans Nova", "Gill Sans", "Gill Sans MT", sans-serif',
     },
     {
       id: 'lower-lawn',
@@ -140,6 +152,7 @@ const WeddingSpacesSection = () => {
       description: 'A more intimate oceanfront setting ideal for ceremonies up to 100 guests. This secluded space offers a sense of privacy while still showcasing the spectacular ocean views that make The Plantation House famous. Perfect for couples desiring an exclusive outdoor experience.',
       image: 'https://www.theplantationhouse.com/wp-content/uploads/2023/05/Photo-9.jpg',
       capacity: 100,
+      fontFamily: '"Gill Sans Nova Book", "Gill Sans Nova", "Gill Sans", "Gill Sans MT", sans-serif',
     },
     {
       id: 'grand-staircase',
@@ -147,6 +160,7 @@ const WeddingSpacesSection = () => {
       description: 'Our iconic grand staircase offers a majestic setting for memorable wedding moments, perfect for elegant ceremonies and stunning photo opportunities. The cascading steps create a dramatic entrance for the bride and provide an unforgettable backdrop for your special day.',
       image: 'https://res.cloudinary.com/dyokodjrm/image/upload/v1746415951/i-hRcx5kq-X3_vtrhqb.jpg',
       capacity: 120,
+      fontFamily: '"Gill Sans Nova Book", "Gill Sans Nova", "Gill Sans", "Gill Sans MT", sans-serif',
     },
     {
       id: 'ohana-room',
@@ -154,13 +168,17 @@ const WeddingSpacesSection = () => {
       description: 'An elegant indoor space with glass-paneled doors opening to golf course views, accommodating up to 80 guests. This versatile venue offers air-conditioned comfort with panoramic vistas, making it perfect for intimate receptions or as a sophisticated backup for outdoor events.',
       image: 'https://www.theplantationhouse.com/wp-content/uploads/2023/05/Photo-8.jpg',
       capacity: 80,
+      fontFamily: '"Gill Sans Nova Book", "Gill Sans Nova", "Gill Sans", "Gill Sans MT", sans-serif',
     },
   ];
 
   const [activeSpace, setActiveSpace] = useState(spaces[0]);
 
   return (
-    <section id="venues" className="py-24 bg-gradient-to-b from-white to-cream-100 relative">
+    <section 
+      id="venues" 
+      className="py-24 bg-gradient-to-b from-white to-[#f7f4f1] relative"
+    >
       {/* Triangular pattern overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="h-full w-full" style={{
@@ -169,14 +187,17 @@ const WeddingSpacesSection = () => {
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-3xl md:text-4xl text-olive-800 text-center mb-16 relative font-light">
-          <span className="inline-block relative">
+        <h2 
+          className="text-3xl md:text-4xl text-olive-800 text-center mb-16 relative font-light italic"
+          style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+        >
+          <span className="inline-block relative" style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
             Our Exclusive Wedding Venues
             <span className="absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-olive-600"></span>
           </span>
         </h2>
         
-        <div className="flex flex-col lg:flex-row gap-12">
+        <div className="flex flex-col lg:flex-row gap-12 force-gill-sans">
           <div className="lg:w-1/2">
             <div className="relative rounded-xl overflow-hidden h-96 lg:h-[600px] shadow-xl transition-all duration-700 group border border-olive-100">
               <img 
@@ -184,10 +205,18 @@ const WeddingSpacesSection = () => {
                 alt={activeSpace.name} 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-olive-800/60 via-olive-700/30 to-transparent flex flex-col justify-end p-8 transition-all duration-300">
-                <h3 className="text-white text-2xl font-medium mb-2">{activeSpace.name}</h3>
-                <p className="text-white/90 mb-4">{activeSpace.description}</p>
-                <div className="flex items-center text-white/90 mb-2">
+              <div 
+                className="absolute inset-0 bg-gradient-to-t from-olive-800/60 via-olive-700/30 to-transparent flex flex-col justify-end p-8 transition-all duration-300"
+              >
+                <h3 
+                  className="text-white text-2xl mb-2 font-normal" 
+                >{activeSpace.name}</h3>
+                <p 
+                  className="text-white/90 mb-4"
+                >{activeSpace.description}</p>
+                <div 
+                  className="flex items-center text-white/90 mb-2"
+                >
                   <Users className="h-4 w-4 mr-2 text-cream-50" />
                   <span>Up to {activeSpace.capacity} guests</span>
                 </div>
@@ -200,15 +229,19 @@ const WeddingSpacesSection = () => {
               {spaces.map((space) => (
                 <div 
                   key={space.id}
-                  className={`p-5 rounded-lg cursor-pointer transition-all duration-300 ${activeSpace.id === space.id ? 'bg-cream-100 border-l-4 border-olive-600 shadow-md' : 'hover:bg-cream-50 hover:shadow-sm'}`}
+                  className={`p-5 rounded-lg cursor-pointer transition-all duration-300 ${activeSpace.id === space.id ? 'bg-[#f5f5f5] border-l-4 border-olive-600 shadow-md' : 'hover:bg-[#f5f5f5] hover:shadow-sm'}`}
                   onClick={() => setActiveSpace(space)}
                 >
                   <div className="flex justify-between items-center">
-                    <h4 className={`font-medium text-lg transition-colors duration-300 ${activeSpace.id === space.id ? 'text-olive-800' : 'text-dark-600'}`}>{space.name}</h4>
+                    <h4 
+                      className={`text-lg transition-colors duration-300 ${activeSpace.id === space.id ? 'text-olive-800' : 'text-dark-600'} !font-normal`}
+                    >{space.name}</h4>
                     <ChevronRight className={`h-5 w-5 transition-transform duration-300 ${activeSpace.id === space.id ? 'rotate-90 text-olive-600' : 'text-dark-400'}`} />
                   </div>
                   {activeSpace.id === space.id && (
-                    <p className="mt-2 text-dark-600 animate-fade-in">
+                    <p 
+                      className="mt-2 text-dark-600 animate-fade-in"
+                    >
                       {space.description.split('.')[0]}.
                     </p>
                   )}
@@ -216,8 +249,10 @@ const WeddingSpacesSection = () => {
               ))}
             </div>
             
-            <div className="mt-10 bg-olive-50 p-6 rounded-lg w-full border border-olive-100">
-              <h4 className="text-olive-800 font-medium text-xl mb-4">Why Our Venues Stand Apart</h4>
+            <div className="mt-10 bg-[#fafafa] p-6 rounded-lg w-full border border-olive-100">
+              <h4 
+                className="text-olive-800 text-xl mb-4 !font-normal"
+              >Why Our Venues Stand Apart</h4>
               <div className="space-y-3">
                 {[
                   "All venues are part of our iconic property - no need for multiple location coordination",
@@ -228,7 +263,9 @@ const WeddingSpacesSection = () => {
                 ].map((item, index) => (
                   <div key={index} className="flex items-start group">
                     <Check className="h-5 w-5 text-olive-600 mr-3 mt-1 flex-shrink-0 transition-colors duration-300 group-hover:text-olive-500" />
-                    <span className="text-dark-600 transition-colors duration-300 group-hover:text-dark-700">{item}</span>
+                    <span 
+                      className="text-dark-600 transition-colors duration-300 group-hover:text-dark-700"
+                    >{item}</span>
                   </div>
                 ))}
               </div>
@@ -266,7 +303,7 @@ const ExperienceSection = () => {
   ];
 
   return (
-    <section id="experience" className="py-24 bg-gradient-radial from-white to-cream-100 relative">
+    <section id="experience" className="py-24 relative" style={{ background: 'radial-gradient(circle, #f3f1ee 0%, #e2dbcf 100%)' }}>
       {/* Wave pattern overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="h-full w-full" style={{
@@ -275,20 +312,30 @@ const ExperienceSection = () => {
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-3xl md:text-4xl text-olive-800 text-center mb-16 relative font-light">
-          <span className="inline-block relative">
+        <h2 
+          className="text-3xl md:text-4xl text-olive-800 text-center mb-16 relative font-light italic"
+          style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+        >
+          <span className="inline-block relative" style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
             The Plantation House Experience
             <span className="absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-olive-600"></span>
           </span>
         </h2>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 force-gill-sans">
           {experiences.map((item, index) => (
-            <div key={index} className="group bg-olive-50 p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-102 hover:translate-y-[-4px] border border-olive-100">
+            <div key={index} className="group bg-[#fafafa] p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-102 hover:translate-y-[-4px] border border-olive-100 gill-sans-card">
               <div className="flex justify-center mb-4">
                 {item.icon}
               </div>
-              <h3 className="text-xl text-center font-medium text-olive-800 mb-3 group-hover:text-olive-700 transition-colors duration-300">{item.title}</h3>
+              <h3 
+                className="text-xl text-center text-olive-800 mb-3 group-hover:text-olive-700 transition-colors duration-300"
+                style={{ 
+                  fontFamily: '"gill-sans-nova", "Gill Sans Nova", "Gill Sans", sans-serif !important',
+                  fontStyle: 'normal !important',
+                  fontWeight: '400 !important'
+                }}
+              >{item.title}</h3>
               <p className="text-center text-dark-600">{item.description}</p>
             </div>
           ))}
@@ -301,17 +348,17 @@ const ExperienceSection = () => {
 // Wedding Concierge Section
 const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
   return (
-    <section id="concierge" className="py-24 bg-gradient-to-br from-cream-50 via-white to-cream-100 relative overflow-hidden">
-      {/* Diamond pattern overlay */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="h-full w-full" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='48' height='64' viewBox='0 0 48 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%235F653C' fill-opacity='0.15'%3E%3Cpath d='M12 0h18v6h6v6h6v18h-6v6h-6v6H12v-6H6v-6H0V12h6V6h6V0zm12 6h-6v6h-6v6H6v6h6v6h6v6h6v-6h6v-6h6v-6h-6v-6h-6V6zm-6 12h6v6h-6v-6zm24 24h6v6h-6v-6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }}></div>
-      </div>
-      
+    <section 
+      id="concierge" 
+      className="py-24 relative overflow-hidden" 
+      style={{ 
+        background: 'linear-gradient(to bottom right, #f3f1ee, #e2dbcf)',
+        backgroundImage: 'linear-gradient(to bottom right, #f3f1ee, #e2dbcf)'
+      }}
+    >
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row bg-white backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-olive-100">
+          <div className="flex flex-col lg:flex-row bg-white rounded-xl overflow-hidden shadow-lg border border-olive-100">
             <div className="lg:w-2/5 h-96 lg:h-auto overflow-hidden">
               <img 
                 src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/Photo-8.jpg"
@@ -321,52 +368,55 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
             </div>
             
             <div className="lg:w-3/5 p-8 lg:p-12">
-              <h2 className="text-3xl md:text-4xl text-olive-800 mb-6 relative font-light">
-                <span className="inline-block relative">
+              <h2 
+                className="text-3xl md:text-4xl text-olive-800 mb-6 relative font-light italic"
+                style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+              >
+                <span className="inline-block relative" style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
                   Your Personal Wedding Concierge
-                  <span className="absolute -bottom-2 left-0 right-1/2 h-0.5 bg-olive-600"></span>
+                  <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-olive-600"></span>
                 </span>
               </h2>
               
-              <p className="text-dark-600 text-lg mb-8">
+              <p className="text-dark-600 text-lg mb-8 force-gill-sans">
                 When you choose The Plantation House, you don't just get a venue - you gain a dedicated Wedding Concierge who leverages our 30+ years as a West Maui institution to create your perfect celebration. Our deep island connections mean unparalleled service for you and your guests.
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <div className="bg-cream-50 rounded-lg p-5 border border-olive-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 force-gill-sans">
+                <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
                   <div className="flex items-start mb-3">
                     <Building className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
-                    <h3 className="text-olive-800 font-medium">Venue Coordination</h3>
+                    <h3 className="text-olive-800 !font-normal">Venue Coordination</h3>
                   </div>
                   <p className="text-dark-600 text-sm">
                     Seamless management of all venue spaces, setup coordination, and weather contingency planning.
                   </p>
                 </div>
                 
-                <div className="bg-cream-50 rounded-lg p-5 border border-olive-100">
+                <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
                   <div className="flex items-start mb-3">
                     <Plane className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
-                    <h3 className="text-olive-800 font-medium">Guest Services</h3>
+                    <h3 className="text-olive-800 !font-normal">Guest Services</h3>
                   </div>
                   <p className="text-dark-600 text-sm">
                     Hotel room blocks, transportation arrangement, and local activity recommendations for all guests.
                   </p>
                 </div>
                 
-                <div className="bg-cream-50 rounded-lg p-5 border border-olive-100">
+                <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
                   <div className="flex items-start mb-3">
                     <CalendarClock className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
-                    <h3 className="text-olive-800 font-medium">Event Timeline</h3>
+                    <h3 className="text-olive-800 !font-normal">Event Timeline</h3>
                   </div>
                   <p className="text-dark-600 text-sm">
                     Detailed planning of your entire wedding day and coordination with all vendors.
                   </p>
                 </div>
                 
-                <div className="bg-cream-50 rounded-lg p-5 border border-olive-100">
+                <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
                   <div className="flex items-start mb-3">
                     <PalmtreeIcon className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
-                    <h3 className="text-olive-800 font-medium">Island Connection</h3>
+                    <h3 className="text-olive-800 !font-normal">Island Connection</h3>
                   </div>
                   <p className="text-dark-600 text-sm">
                     Access to Maui's best vendors, exclusive experiences, and local expertise through our extensive network.
@@ -374,14 +424,14 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
                 </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center justify-between p-5 bg-olive-50 rounded-lg border border-olive-100">
+              <div className="flex flex-col sm:flex-row items-center justify-between p-5 bg-[#fcfcfb] rounded-lg border border-olive-100 force-gill-sans">
                 <div className="text-dark-700 mb-4 sm:mb-0">
-                  <p className="font-medium">Ready to meet your Wedding Concierge?</p>
+                  <p className="!font-normal">Ready to meet your Wedding Concierge?</p>
                   <p className="text-dark-600 text-sm mt-1">Book a tour today and begin your planning journey</p>
                 </div>
                 <button 
                   onClick={onScheduleTour}
-                  className="bg-olive-600 hover:bg-olive-500 text-white px-5 py-2 rounded-full font-medium transition-colors duration-300 shadow-md"
+                  className="bg-olive-600 hover:bg-olive-500 text-white px-5 py-2 rounded-full !font-normal transition-colors duration-300 shadow-md"
                 >
                   Schedule Now
                 </button>
@@ -397,20 +447,11 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
 // Testimonial Section Component
 const TestimonialSection = () => {
   return (
-    <section className="py-24 bg-cream-50 relative">
-      {/* Background image with texture overlay */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-cream-50/90 to-white/90 z-10"></div>
-        <img
-          src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/Photo-1.jpg"
-          alt="Background"
-          className="w-full h-full object-cover"
-          style={{ opacity: 0.15 }}
-        />
-        {/* Noise texture overlay */}
-        <div className="absolute inset-0 z-20 opacity-30" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          mixBlendMode: 'overlay'
+    <section className="py-24 bg-gradient-to-b from-cream-50 to-white relative">
+      {/* Dotted pattern overlay */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div className="h-full w-full" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%235F653C' fill-opacity='0.3' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E")`,
         }}></div>
       </div>
       
@@ -435,10 +476,6 @@ const TestimonialSection = () => {
           </div>
         </div>
       </div>
-      
-      {/* Decorative elements */}
-      <div className="absolute bottom-0 left-0 w-40 h-40 bg-olive-600/10 rounded-full -mb-20 -ml-20 z-10"></div>
-      <div className="absolute top-0 right-0 w-60 h-60 bg-olive-600/10 rounded-full -mt-20 -mr-20 z-10"></div>
     </section>
   );
 };
@@ -454,9 +491,14 @@ const GallerySectionPreview = () => {
         }}></div>
       </div>
       
+      {/* Add style tag for global styles */}
+      <style>{globalStyles}</style>
+      
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-3xl md:text-4xl text-olive-800 text-center mb-16 relative font-light">
-          <span className="inline-block relative">
+        <h2 className="text-3xl md:text-4xl text-olive-800 text-center mb-16 relative font-light italic"
+          style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+        >
+          <span className="inline-block relative" style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
             Explore Our Wedding Gallery
             <span className="absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-olive-600"></span>
           </span>
@@ -470,8 +512,8 @@ const GallerySectionPreview = () => {
               className="w-full h-64 object-cover transition-transform duration-1000 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-olive-800/70 via-olive-700/40 to-transparent flex flex-col justify-end p-4">
-              <h3 className="text-white font-medium">Molokai Lawn</h3>
-              <p className="text-white/90 text-sm">Oceanfront ceremonies with breathtaking views</p>
+              <h3 className="text-white font-medium gill-sans-nova-book">Molokai Lawn</h3>
+              <p className="text-white/90 text-sm gill-sans-nova-book">Oceanfront ceremonies with breathtaking views</p>
             </div>
           </div>
           
@@ -482,8 +524,8 @@ const GallerySectionPreview = () => {
               className="w-full h-64 object-cover transition-transform duration-1000 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-olive-800/70 via-olive-700/40 to-transparent flex flex-col justify-end p-4">
-              <h3 className="text-white font-medium">Grand Staircase</h3>
-              <p className="text-white/90 text-sm">Elegant setting for memorable wedding moments</p>
+              <h3 className="text-white font-medium gill-sans-nova-book">Grand Staircase</h3>
+              <p className="text-white/90 text-sm gill-sans-nova-book">Elegant setting for memorable wedding moments</p>
             </div>
           </div>
           
@@ -494,8 +536,8 @@ const GallerySectionPreview = () => {
               className="w-full h-64 object-cover transition-transform duration-1000 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-olive-800/70 via-olive-700/40 to-transparent flex flex-col justify-end p-4">
-              <h3 className="text-white font-medium">Lower Lawn</h3>
-              <p className="text-white/90 text-sm">Intimate ceremonies with ocean backdrop</p>
+              <h3 className="text-white font-medium gill-sans-nova-book">Lower Lawn</h3>
+              <p className="text-white/90 text-sm gill-sans-nova-book">Intimate ceremonies with ocean backdrop</p>
             </div>
           </div>
           
@@ -506,8 +548,8 @@ const GallerySectionPreview = () => {
               className="w-full h-64 object-cover transition-transform duration-1000 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-olive-800/70 via-olive-700/40 to-transparent flex flex-col justify-end p-4">
-              <h3 className="text-white font-medium">Culinary Excellence</h3>
-              <p className="text-white/90 text-sm">Award-winning island-inspired cuisine</p>
+              <h3 className="text-white font-medium gill-sans-nova-book">Culinary Excellence</h3>
+              <p className="text-white/90 text-sm gill-sans-nova-book">Award-winning island-inspired cuisine</p>
             </div>
           </div>
         </div>
@@ -518,9 +560,9 @@ const GallerySectionPreview = () => {
             className="inline-flex items-center bg-olive-600 hover:bg-olive-500 text-white px-6 py-3 rounded-full transition-colors duration-300 transform hover:scale-105 shadow-md"
           >
             <Camera className="h-5 w-5 mr-2" />
-            <span>View Full Gallery</span>
+            <span className="gill-sans-nova-book">View Full Gallery</span>
           </Link>
-          <p className="text-dark-600 mt-4 text-sm">Explore all our stunning venues and past celebrations</p>
+          <p className="text-dark-600 mt-4 text-sm gill-sans-nova-book">Explore all our stunning venues and past celebrations</p>
         </div>
       </div>
     </section>

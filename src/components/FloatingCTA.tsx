@@ -61,7 +61,7 @@ const FloatingCTA = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
           <div className="flex-1">
             <div className="mb-8">
               <img 
-                src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/PH_Logo_Butterfly-retina-1-400x65.png" 
+                src="https://res.cloudinary.com/dyokodjrm/image/upload/v1747203557/PH_Logo_Black_Horizontal_bu7ppb.webp" 
                 alt="The Plantation House" 
                 className="h-10 mb-4 mx-auto"
                 style={{ filter: 'brightness(0)' }}

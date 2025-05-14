@@ -213,8 +213,12 @@ const GalleryPage = () => {
           />
         </div>
         <div className="relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-olive-800 leading-tight mb-4">
-            Photo Gallery
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-olive-800 leading-tight mb-4 italic"
+            style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+          >
+            <span style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
+              Photo Gallery
+            </span>
           </h1>
           <p className="text-xl text-dark-600 max-w-3xl mx-auto px-4 font-light">
             Explore the beauty of The Plantation House through our stunning collection of venue photos
@@ -256,7 +260,13 @@ const GalleryPage = () => {
           
           {/* Active Category Description */}
           <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-2xl md:text-3xl text-olive-800 mb-4 font-light">{activeCategory.name}</h2>
+            <h2 className="text-2xl md:text-3xl text-olive-800 mb-4 font-light italic"
+              style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+            >
+              <span style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
+                {activeCategory.name}
+              </span>
+            </h2>
             <p className="text-dark-600">{activeCategory.description}</p>
           </div>
           

@@ -3,7 +3,7 @@ import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 
 const ContactSection = () => {
   return (
-    <section id="contact" className="py-24 bg-gradient-to-b from-cream-50 to-cream-100 relative">
+    <section id="contact" className="py-24 bg-gradient-to-br from-[#f3f1ee] to-[#e2dbcf] relative">
       {/* Flower pattern overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="h-full w-full" style={{
@@ -15,7 +15,13 @@ const ContactSection = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-xl overflow-hidden border border-olive-200">
             <div className="lg:w-1/2 p-8 lg:p-12">
-              <h2 className="text-3xl text-olive-800 mb-6 font-light">Your perfect Maui wedding begins here</h2>
+              <h2 className="text-3xl text-olive-800 mb-6 font-light italic"
+                style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+              >
+                <span style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
+                  Your Perfect Maui Wedding Begins Here
+                </span>
+              </h2>
               <p className="text-dark-500 mb-10 leading-relaxed">
                 Contact our Wedding Concierge team to schedule a tour and begin planning your celebration at West Maui's most renowned venue.
               </p>
@@ -27,7 +33,7 @@ const ContactSection = () => {
                     <input
                       type="text"
                       id="firstName"
-                      className="w-full px-4 py-3 bg-cream-50 border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
+                      className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                       placeholder="Your first name"
                     />
                   </div>
@@ -36,7 +42,7 @@ const ContactSection = () => {
                     <input
                       type="text"
                       id="lastName"
-                      className="w-full px-4 py-3 bg-cream-50 border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
+                      className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                       placeholder="Your last name"
                     />
                   </div>
@@ -47,7 +53,7 @@ const ContactSection = () => {
                   <input
                     type="email"
                     id="email"
-                    className="w-full px-4 py-3 bg-cream-50 border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
+                    className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -57,7 +63,7 @@ const ContactSection = () => {
                   <input
                     type="tel"
                     id="phone"
-                    className="w-full px-4 py-3 bg-cream-50 border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
+                    className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                     placeholder="(808) 555-1234"
                   />
                 </div>
@@ -67,7 +73,7 @@ const ContactSection = () => {
                   <input
                     type="date"
                     id="eventDate"
-                    className="w-full px-4 py-3 bg-cream-50 border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
+                    className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                   />
                 </div>
                 
@@ -75,7 +81,7 @@ const ContactSection = () => {
                   <label htmlFor="guests" className="block text-sm font-medium text-dark-600 mb-1">Estimated Number of Guests</label>
                   <select
                     id="guests"
-                    className="w-full px-4 py-3 bg-cream-50 border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
+                    className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                   >
                     <option>Please select</option>
                     <option>10-50</option>
@@ -91,7 +97,7 @@ const ContactSection = () => {
                   <textarea
                     id="message"
                     rows={4}
-                    className="w-full px-4 py-3 bg-cream-50 border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
+                    className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                     placeholder="Tell us about your wedding vision or any questions you have..."
                   ></textarea>
                 </div>

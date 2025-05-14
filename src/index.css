@@ -2,11 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base font styles */
+/* Global font styles with improved browser compatibility */
 @layer base {
-  html {
-    font-family: 'Gill Sans Nova', 'Gill Sans', 'Gill Sans MT', sans-serif;
+  /* All headings use Palatino Linotype italic */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "palatino-linotype", "Palatino Linotype", "Palatino", serif !important;
+    font-weight: 400;
+    font-style: italic !important;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Body text uses Gill Sans Nova Book */
+  body, p, span, div, a, button, input, textarea, select, li {
+    font-family: "gill-sans-nova", "Gill Sans Nova", "Gill Sans", "Gill Sans MT", "Segoe UI", "Helvetica Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Specific override to ensure headings have correct font */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "palatino-linotype", "Palatino Linotype", "Palatino", serif !important;
+  font-style: italic !important;
+}
+
+/* Force Gill Sans Nova for specific sections */
+.force-gill-sans {
+  font-family: "gill-sans-nova", "Gill Sans Nova", "Gill Sans", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important; 
+}
+
+.force-gill-sans * {
+  font-family: "gill-sans-nova", "Gill Sans Nova", "Gill Sans", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+}
+
+/* Extra strong override specifically for headings inside force-gill-sans */
+.force-gill-sans h1, 
+.force-gill-sans h2, 
+.force-gill-sans h3, 
+.force-gill-sans h4, 
+.force-gill-sans h5, 
+.force-gill-sans h6 {
+  font-family: "gill-sans-nova", "Gill Sans Nova", "Gill Sans", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+}
+
+/* Special cards with heading in gill sans - use this class for Experience cards */
+.gill-sans-card h3 {
+  font-family: "gill-sans-nova", "Gill Sans Nova", "Gill Sans", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
 }
 
 /* Custom aspect ratio utilities */
@@ -25,19 +79,29 @@
   left: 0;
 }
 
-/* Animation utilities */
+/* Animation Utilities */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes subtleZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
 .animate-fade-in {
-  animation: fadeIn 1s ease-in-out forwards;
+  animation: fadeIn 1s ease-out forwards;
 }
 
 .animate-fade-in-delay {
-  animation: fadeIn 1s ease-in-out 0.3s forwards;
   opacity: 0;
+  animation: fadeIn 1s ease-out 0.3s forwards;
 }
 
 .animate-fade-in-delay-2 {
-  animation: fadeIn 1s ease-in-out 0.6s forwards;
   opacity: 0;
+  animation: fadeIn 1s ease-out 0.6s forwards;
 }
 
 .animate-bounce {
@@ -45,22 +109,11 @@
 }
 
 .animate-subtle-zoom {
-  animation: subtleZoom 20s ease-in-out infinite alternate;
+  animation: subtleZoom 20s ease-out forwards;
 }
 
 .animate-subtle-zoom-slow {
   animation: subtleZoom 30s ease-in-out infinite alternate;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @keyframes bounce {
@@ -72,15 +125,6 @@
   }
   60% {
     transform: translateY(-5px);
-  }
-}
-
-@keyframes subtleZoom {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.1);
   }
 }
 

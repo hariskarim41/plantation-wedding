@@ -16,13 +16,13 @@ const Navigation = () => {
   }, []);
   
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md py-3' : 'bg-dark-700/40 backdrop-blur-sm py-5'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md py-3' : 'bg-white/20 backdrop-blur-sm py-5'}`}>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="z-50">
             <div className="px-2 py-1">
               <img 
-                src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/PH_Logo_Butterfly-retina-1-400x65.png" 
+                src="https://res.cloudinary.com/dyokodjrm/image/upload/v1747203557/PH_Logo_Black_Horizontal_bu7ppb.webp" 
                 alt="The Plantation House" 
                 className={`h-10 md:h-12 transition-opacity duration-300 ${isScrolled ? 'opacity-100 brightness-0' : 'opacity-90 hover:opacity-100 filter-none'}`}
                 style={{ filter: isScrolled ? 'brightness(0)' : 'none' }}
@@ -33,7 +33,7 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-8">
             <Link 
               to="/"
-              className="relative font-semibold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
+              className="relative font-bold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
             >
               <span>Home</span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-olive-500 transition-all duration-300 group-hover:w-full"></span>
@@ -42,7 +42,7 @@ const Navigation = () => {
               <a 
                 key={item} 
                 href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
-                className="relative font-semibold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
+                className="relative font-bold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
               >
                 <span>{item}</span>
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-olive-500 transition-all duration-300 group-hover:w-full"></span>
@@ -52,14 +52,14 @@ const Navigation = () => {
               href="https://www.theplantationhouse.com/" 
               target="_blank"
               rel="noopener noreferrer"
-              className="relative font-semibold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
+              className="relative font-bold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
             >
               <span>Cuisine</span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-olive-500 transition-all duration-300 group-hover:w-full"></span>
             </a>
             <Link 
               to="/gallery" 
-              className="relative font-semibold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
+              className="relative font-bold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
             >
               <span>Gallery</span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-olive-500 transition-all duration-300 group-hover:w-full"></span>
@@ -68,7 +68,7 @@ const Navigation = () => {
               <a 
                 key={item} 
                 href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
-                className="relative font-semibold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
+                className="relative font-bold text-lg transition-colors duration-300 group text-olive-800 hover:text-olive-600"
               >
                 <span>{item}</span>
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-olive-500 transition-all duration-300 group-hover:w-full"></span>
@@ -76,7 +76,7 @@ const Navigation = () => {
             ))}
             <button 
               onClick={() => document.getElementById('schedule-button')?.click()}
-              className="bg-olive-600 hover:bg-olive-500 text-white px-6 py-3 rounded-full font-semibold text-lg transition-colors duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+              className="bg-olive-600 hover:bg-olive-500 text-white px-6 py-3 rounded-full font-bold text-lg transition-colors duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
             >
               Schedule a Tour
             </button>
@@ -100,7 +100,7 @@ const Navigation = () => {
         <div className="flex flex-col items-center space-y-6">
           <Link 
             to="/"
-            className="text-olive-800 text-2xl font-semibold transition-colors hover:text-olive-600"
+            className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Home
@@ -109,7 +109,7 @@ const Navigation = () => {
             <a 
               key={item} 
               href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
-              className="text-olive-800 text-2xl font-semibold transition-colors hover:text-olive-600"
+              className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {item}
@@ -119,14 +119,14 @@ const Navigation = () => {
             href="https://www.theplantationhouse.com/" 
             target="_blank"
             rel="noopener noreferrer"
-            className="text-olive-800 text-2xl font-semibold transition-colors hover:text-olive-600"
+            className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Cuisine
           </a>
           <Link 
             to="/gallery" 
-            className="text-olive-800 text-2xl font-semibold transition-colors hover:text-olive-600"
+            className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Gallery
@@ -135,14 +135,14 @@ const Navigation = () => {
             <a 
               key={item} 
               href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
-              className="text-olive-800 text-2xl font-semibold transition-colors hover:text-olive-600"
+              className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {item}
             </a>
           ))}
           <button 
-            className="mt-4 bg-olive-600 hover:bg-olive-500 text-white px-7 py-4 rounded-full font-semibold text-xl transition-all duration-300 transform hover:scale-105"
+            className="mt-4 bg-olive-600 hover:bg-olive-500 text-white px-7 py-4 rounded-full font-bold text-xl transition-all duration-300 transform hover:scale-105"
             onClick={() => {
               setIsMobileMenuOpen(false);
               document.getElementById('schedule-button')?.click();

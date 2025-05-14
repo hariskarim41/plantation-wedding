@@ -233,7 +233,7 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
       <div className="fixed right-0 top-0 bottom-0 w-full max-w-md z-50 shadow-xl transform transition-transform duration-500 ease-in-out bg-white overflow-y-auto">
         <div className="h-full flex flex-col">
           <div className="flex justify-between items-center p-5 border-b border-olive-100 bg-cream-50">
-            <h2 className="text-2xl font-light text-olive-800">Schedule Your Tour</h2>
+            <h2 className="text-2xl font-light text-olive-800 italic font-['palatino-linotype']">Schedule Your Tour</h2>
             <button
               className="text-dark-500 hover:text-olive-600 transition-colors"
               onClick={onClose}
