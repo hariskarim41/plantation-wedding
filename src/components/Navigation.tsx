@@ -14,12 +14,97 @@ const Navigation = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Prevent body scroll when mobile menu is open without jumping to top
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      
+      return () => {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isMobileMenuOpen]);
+
+  // Close mobile menu on window resize to desktop size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobileMenuOpen]);
+
+  const handleMobileMenuClose = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleMobileNavClick = (href?: string, isHome: boolean = false) => {
+    setIsMobileMenuOpen(false);
+    
+    if (isHome) {
+      // Handle home navigation - scroll to top
+      if (window.location.pathname === '/') {
+        // Already on home page, scroll to top
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 400);
+      } else {
+        // Navigate to home page
+        window.location.href = '/';
+      }
+      return;
+    }
+    
+    if (href && href.startsWith('/#')) {
+      // Check if we're on the gallery page and need to navigate home first
+      if (window.location.pathname !== '/') {
+        window.location.href = href;
+        return;
+      }
+      
+      // Small delay to allow menu to close before scrolling
+      setTimeout(() => {
+        const elementId = href.substring(2); // Remove /#
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          // Fallback: try to navigate to the URL
+          window.location.hash = elementId;
+        }
+      }, 400);
+    }
+  };
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (window.location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
   
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md py-3' : 'bg-white/20 backdrop-blur-sm py-5'}`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-md py-3' : 'backdrop-blur-sm py-5'
+      }`}
+      style={!isScrolled ? { backgroundColor: '#ffffff80' } : {}}
+    >
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="z-50">
+          <Link to="/" className={`z-50 relative transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} onClick={handleLogoClick}>
             <div className="px-2 py-1">
               <img 
                 src="https://res.cloudinary.com/dyokodjrm/image/upload/v1747203557/PH_Logo_Black_Horizontal_bu7ppb.webp" 
@@ -83,8 +168,10 @@ const Navigation = () => {
           </div>
           
           <button 
-            className="lg:hidden z-50 p-2 focus:outline-none"
+            className={`lg:hidden z-50 relative p-2 focus:outline-none focus:ring-2 focus:ring-olive-500 focus:ring-opacity-50 rounded-md transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? (
               <X className="h-7 w-7 text-olive-800" />
@@ -96,60 +183,135 @@ const Navigation = () => {
       </div>
       
       {/* Mobile Menu */}
-      <div className={`fixed inset-0 bg-white/95 flex flex-col items-center justify-center transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
-        <div className="flex flex-col items-center space-y-6">
-          <Link 
-            to="/"
-            className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Home
-          </Link>
-          {['Venues', 'Experience'].map((item) => (
-            <a 
-              key={item} 
-              href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
-              className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
-              onClick={() => setIsMobileMenuOpen(false)}
+      <div 
+        className={`fixed inset-0 z-40 transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen 
+            ? 'opacity-100 visible' 
+            : 'opacity-0 invisible pointer-events-none'
+        }`}
+        aria-hidden={!isMobileMenuOpen}
+      >
+        {/* Backdrop */}
+        <div 
+          className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
+            isMobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={handleMobileMenuClose}
+        />
+        
+                {/* Slide-in Menu Panel */}
+        <div 
+          className={`fixed top-0 right-0 h-screen w-full sm:w-80 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
+            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          {/* Menu Header */}
+          <div className="flex items-center justify-between px-6 py-6 border-b border-gray-200">
+            <img 
+              src="https://res.cloudinary.com/dyokodjrm/image/upload/v1747203557/PH_Logo_Black_Horizontal_bu7ppb.webp" 
+              alt="The Plantation House" 
+              className="h-8"
+            />
+            <button 
+              onClick={handleMobileMenuClose}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Close menu"
             >
-              {item}
-            </a>
-          ))}
-          <a 
-            href="https://www.theplantationhouse.com/" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Cuisine
-          </a>
-          <Link 
-            to="/gallery" 
-            className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Gallery
-          </Link>
-          {['Concierge', 'Contact'].map((item) => (
-            <a 
-              key={item} 
-              href={`/#${item.toLowerCase().replace(/\s+/g, '-')}`} 
-              className="text-olive-800 text-2xl font-bold transition-colors hover:text-olive-600"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {item}
-            </a>
-          ))}
-          <button 
-            className="mt-4 bg-olive-600 hover:bg-olive-500 text-white px-7 py-4 rounded-full font-bold text-xl transition-all duration-300 transform hover:scale-105"
-            onClick={() => {
-              setIsMobileMenuOpen(false);
-              document.getElementById('schedule-button')?.click();
-            }}
-          >
-            Schedule a Tour
-          </button>
+              <X className="h-6 w-6 text-gray-600" />
+            </button>
+          </div>
+
+          {/* Menu Content */}
+          <div className="flex flex-col justify-center flex-1 px-8 py-12">
+            <nav className="flex flex-col space-y-8">
+              <Link 
+                to="/"
+                className="text-gray-800 text-xl font-medium py-4 hover:text-olive-600 transition-colors duration-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleMobileNavClick(undefined, true);
+                }}
+              >
+                Home
+              </Link>
+              
+              <a 
+                href="/#venues" 
+                className="text-gray-800 text-xl font-medium py-4 hover:text-olive-600 transition-colors duration-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleMobileNavClick('/#venues');
+                }}
+              >
+                Venues
+              </a>
+              
+              <a 
+                href="/#experience" 
+                className="text-gray-800 text-xl font-medium py-4 hover:text-olive-600 transition-colors duration-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleMobileNavClick('/#experience');
+                }}
+              >
+                Experience
+              </a>
+              
+              <a 
+                href="https://www.theplantationhouse.com/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-800 text-xl font-medium py-4 hover:text-olive-600 transition-colors duration-200"
+                onClick={() => handleMobileNavClick()}
+              >
+                Cuisine
+              </a>
+              
+              <Link 
+                to="/gallery" 
+                className="text-gray-800 text-xl font-medium py-4 hover:text-olive-600 transition-colors duration-200"
+                onClick={() => handleMobileNavClick()}
+              >
+                Gallery
+              </Link>
+              
+              <a 
+                href="/#concierge" 
+                className="text-gray-800 text-xl font-medium py-4 hover:text-olive-600 transition-colors duration-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleMobileNavClick('/#concierge');
+                }}
+              >
+                Concierge
+              </a>
+              
+              <a 
+                href="/#contact" 
+                className="text-gray-800 text-xl font-medium py-4 hover:text-olive-600 transition-colors duration-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleMobileNavClick('/#contact');
+                }}
+              >
+                Contact
+              </a>
+            </nav>
+            
+            <div className="mt-12">
+              <button 
+                className="w-full bg-olive-600 hover:bg-olive-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200"
+                onClick={() => {
+                  handleMobileNavClick();
+                  setTimeout(() => {
+                    document.getElementById('schedule-button')?.click();
+                  }, 300);
+                }}
+              >
+                Schedule a Tour
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
