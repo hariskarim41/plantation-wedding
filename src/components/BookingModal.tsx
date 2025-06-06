@@ -308,53 +308,104 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
               </div>
             </div>
             
-            <div className="mb-6">
-              <h3 className="text-lg font-medium text-olive-800 mb-3">Contact Information</h3>
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-dark-600 mb-1">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full px-3 py-2 bg-white border border-olive-100 rounded-md text-dark-700 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent"
-                    placeholder="Your name"
-                  />
-                </div>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const formData = new FormData(form);
+              
+              // Extract form data for webhook
+              const name = formData.get('name') as string;
+              const email = formData.get('email') as string;
+              const phone = formData.get('phone') as string;
+              
+              // Format selected date and time
+              const tourDate = selectedDate.toDateString();
+              const tourTime = selectedTime;
+              
+              // Send webhook
+              const webhookData = {
+                form_type: 'Schedule Tour',
+                name: name,
+                email: email,
+                phone: phone,
+                tourDate: tourDate,
+                tourTime: tourTime,
+                timestamp: new Date().toISOString(),
+                source: 'plantation-wedding.com'
+              };
+              
+              try {
+                // Send webhook
+                await fetch('https://webhook.site/ebab4374-044e-45b7-bc9b-66da7adfe3e4', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(webhookData)
+                });
                 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-dark-600 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full px-3 py-2 bg-white border border-olive-100 rounded-md text-dark-700 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent"
-                    placeholder="yourname@example.com"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-dark-600 mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    className="w-full px-3 py-2 bg-white border border-olive-100 rounded-md text-dark-700 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent"
-                    placeholder="(808) 555-1234"
-                  />
+                // Show success message and close modal
+                alert(`Thank you ${name}! Your tour is scheduled for ${tourDate} at ${tourTime}. We'll contact you shortly to confirm.`);
+                onClose();
+              } catch (error) {
+                console.error('Tour booking error:', error);
+                alert(`Thank you ${name}! Your tour request has been received. We'll contact you shortly to confirm your ${tourDate} appointment.`);
+                onClose();
+              }
+            }}>
+              <div className="mb-6">
+                <h3 className="text-lg font-medium text-olive-800 mb-3">Contact Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-dark-600 mb-1">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      className="w-full px-3 py-2 bg-white border border-olive-100 rounded-md text-dark-700 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-dark-600 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      className="w-full px-3 py-2 bg-white border border-olive-100 rounded-md text-dark-700 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent"
+                      placeholder="yourname@example.com"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-dark-600 mb-1">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      className="w-full px-3 py-2 bg-white border border-olive-100 rounded-md text-dark-700 placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent"
+                      placeholder="(808) 555-1234"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            <button
-              className="w-full bg-olive-600 hover:bg-olive-500 text-white font-medium py-3 px-4 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-olive-600 focus:ring-offset-2 focus:ring-offset-white transform hover:scale-[1.02]"
-            >
-              <Calendar size={18} className="inline-block mr-2 -mt-0.5" />
-              Confirm Your Tour
-            </button>
+              
+              <button
+                type="submit"
+                disabled={!selectedTime}
+                className="w-full bg-olive-600 hover:bg-olive-500 text-white font-medium py-3 px-4 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-olive-600 focus:ring-offset-2 focus:ring-offset-white transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                <Calendar size={18} className="inline-block mr-2 -mt-0.5" />
+                Confirm Your Tour
+              </button>
+            </form>
           </div>
         </div>
       </div>

@@ -27,22 +27,57 @@ const ContactSection = () => {
               </p>
               
               <form className="space-y-6" name="contact" method="POST" data-netlify="true" action="/thank-you"
-                    onSubmit={(e) => {
-                      // For Cloudflare Pages - use Cloudflare Forms
+                    onSubmit={async (e) => {
                       e.preventDefault();
                       const form = e.target as HTMLFormElement;
                       const formData = new FormData(form);
                       
-                      fetch('/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams(formData as any).toString(),
-                      }).then(() => {
-                        alert('Thank you! We\'ll be in touch soon.');
+                      // Extract form data for webhook
+                      const firstName = formData.get('firstName') as string;
+                      const lastName = formData.get('lastName') as string;
+                      const email = formData.get('email') as string;
+                      const phone = formData.get('phone') as string;
+                      const eventDate = formData.get('eventDate') as string;
+                      const guests = formData.get('guests') as string;
+                      const message = formData.get('message') as string;
+                      
+                      // Send webhook
+                      const webhookData = {
+                        form_type: 'Contact Form',
+                        firstName: firstName,
+                        lastName: lastName,
+                        fullName: `${firstName} ${lastName}`,
+                        email: email,
+                        phone: phone,
+                        eventDate: eventDate,
+                        guests: guests,
+                        message: message,
+                        timestamp: new Date().toISOString(),
+                        source: 'plantation-wedding.com'
+                      };
+                      
+                      try {
+                        // Send webhook
+                        await fetch('https://webhook.site/ebab4374-044e-45b7-bc9b-66da7adfe3e4', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(webhookData)
+                        });
+                        
+                        // Also submit to Cloudflare Forms as backup
+                        await fetch('/', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                          body: new URLSearchParams(formData as any).toString(),
+                        });
+                        
+                        // Redirect to thank you page
+                        window.location.href = '/thank-you';
+                      } catch (error) {
+                        console.error('Form submission error:', error);
+                        alert('Thank you for your inquiry! We\'ll be in touch soon.');
                         form.reset();
-                      }).catch(() => {
-                        alert('There was an error submitting your form. Please try again or call us directly.');
-                      });
+                      }
                     }}>
                 {/* Hidden field for Cloudflare Forms */}
                 <input type="hidden" name="form-name" value="contact" />
