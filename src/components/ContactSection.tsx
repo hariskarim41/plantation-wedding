@@ -26,13 +26,35 @@ const ContactSection = () => {
                 Contact our Wedding Concierge team to schedule a tour and begin planning your celebration at West Maui's most renowned venue.
               </p>
               
-              <form className="space-y-6">
+              <form className="space-y-6" name="contact" method="POST" data-netlify="true" action="/thank-you"
+                    onSubmit={(e) => {
+                      // For Cloudflare Pages - use Cloudflare Forms
+                      e.preventDefault();
+                      const form = e.target as HTMLFormElement;
+                      const formData = new FormData(form);
+                      
+                      fetch('/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams(formData as any).toString(),
+                      }).then(() => {
+                        alert('Thank you! We\'ll be in touch soon.');
+                        form.reset();
+                      }).catch(() => {
+                        alert('There was an error submitting your form. Please try again or call us directly.');
+                      });
+                    }}>
+                {/* Hidden field for Cloudflare Forms */}
+                <input type="hidden" name="form-name" value="contact" />
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="firstName" className="block text-sm font-medium text-dark-600 mb-1">First Name</label>
                     <input
                       type="text"
                       id="firstName"
+                      name="firstName"
+                      required
                       className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                       placeholder="Your first name"
                     />
@@ -42,6 +64,8 @@ const ContactSection = () => {
                     <input
                       type="text"
                       id="lastName"
+                      name="lastName"
+                      required
                       className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                       placeholder="Your last name"
                     />
@@ -53,6 +77,8 @@ const ContactSection = () => {
                   <input
                     type="email"
                     id="email"
+                    name="email"
+                    required
                     className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                     placeholder="your.email@example.com"
                   />
@@ -63,6 +89,7 @@ const ContactSection = () => {
                   <input
                     type="tel"
                     id="phone"
+                    name="phone"
                     className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                     placeholder="(808) 555-1234"
                   />
@@ -73,6 +100,7 @@ const ContactSection = () => {
                   <input
                     type="date"
                     id="eventDate"
+                    name="eventDate"
                     className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                   />
                 </div>
@@ -81,6 +109,7 @@ const ContactSection = () => {
                   <label htmlFor="guests" className="block text-sm font-medium text-dark-600 mb-1">Estimated Number of Guests</label>
                   <select
                     id="guests"
+                    name="guests"
                     className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                   >
                     <option>Please select</option>
@@ -96,6 +125,7 @@ const ContactSection = () => {
                   <label htmlFor="message" className="block text-sm font-medium text-dark-600 mb-1">Additional Information</label>
                   <textarea
                     id="message"
+                    name="message"
                     rows={4}
                     className="w-full px-4 py-3 bg-[#fcfcfb] border border-olive-200 text-dark-700 rounded-lg focus:ring-2 focus:ring-olive-400 focus:border-olive-400 transition-all duration-300"
                     placeholder="Tell us about your wedding vision or any questions you have..."
