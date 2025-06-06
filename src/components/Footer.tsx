@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { MapPin, Phone, Mail, Heart, ChevronRight } from 'lucide-react';
 
 const Footer = () => {
@@ -35,13 +35,13 @@ const Footer = () => {
             <h3 className="text-xl mb-4 text-olive-800 font-light">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-dark-500 hover:text-olive-600 transition-colors">Home</Link>
+                <Link href="/" className="text-dark-500 hover:text-olive-600 transition-colors">Home</Link>
               </li>
               <li>
                 <a href="#venues" className="text-dark-500 hover:text-olive-600 transition-colors">Venues</a>
               </li>
               <li>
-                <Link to="/gallery" className="text-dark-500 hover:text-olive-600 transition-colors">Gallery</Link>
+                <Link href="/gallery" className="text-dark-500 hover:text-olive-600 transition-colors">Gallery</Link>
               </li>
               <li>
                 <a href="#experience" className="text-dark-500 hover:text-olive-600 transition-colors">Experience</a>
@@ -75,7 +75,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-olive-200 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-dark-400 text-sm mb-4 md:mb-0">
+          <p className="text-dark-400 text-sm mb-4 md:mb-0" suppressHydrationWarning>
             © {new Date().getFullYear()} The Plantation House. All rights reserved.
           </p>
 

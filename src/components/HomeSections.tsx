@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Link from 'next/link';
 import { 
   ChevronDown, 
   Calendar, 
@@ -21,28 +21,11 @@ import {
   Plane,
   Trophy
 } from 'lucide-react';
-import GalleryPage from './GalleryPage';
 
-// Import extracted components
-import ScrollToTop from './components/ScrollToTop';
-import BookingModal from './components/BookingModal';
-import Navigation from './components/Navigation';
-import HeroSection from './components/HeroSection';
-import Footer from './components/Footer';
-import FloatingCTA from './components/FloatingCTA';
-import ContactSection from './components/ContactSection';
-
-// Add global styles
-const globalStyles = `
-  .gill-sans-nova-book {
-    font-family: "gill-sans-nova", "Gill Sans Nova Book", "Gill Sans Nova", "Gill Sans", sans-serif !important;
-    font-weight: 400 !important;
-    font-style: normal !important;
-  }
-`;
+// Gill Sans Nova styles moved to global CSS to prevent hydration issues
 
 // Introduction Section Component
-const IntroductionSection = () => {
+export const IntroductionSection = () => {
   return (
     <section className="py-20 bg-gradient-to-b from-white to-[#f7f4f1] relative">
       {/* Decorative pattern overlay */}
@@ -87,7 +70,7 @@ const IntroductionSection = () => {
 };
 
 // Maui's Most Trusted Wedding Venue Section
-const TrustedVenueSection = () => {
+export const TrustedVenueSection = () => {
   return (
     <section className="py-24 bg-cream-50 relative">
       {/* Woven texture pattern overlay */}
@@ -136,7 +119,7 @@ const TrustedVenueSection = () => {
 };
 
 // Wedding Spaces Section Component
-const WeddingSpacesSection = () => {
+export const WeddingSpacesSection = () => {
   const spaces = [
     {
       id: 'molokai-lawn',
@@ -198,76 +181,71 @@ const WeddingSpacesSection = () => {
         </h2>
         
         <div className="flex flex-col lg:flex-row gap-12 force-gill-sans">
-          <div className="lg:w-1/2">
-            <div className="relative rounded-xl overflow-hidden h-96 lg:h-[600px] shadow-xl transition-all duration-700 group border border-olive-100">
-              <img 
-                src={activeSpace.image} 
-                alt={activeSpace.name} 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              />
-              <div 
-                className="absolute inset-0 bg-gradient-to-t from-olive-800/60 via-olive-700/30 to-transparent flex flex-col justify-end p-8 transition-all duration-300"
-              >
-                <h3 
-                  className="text-white text-2xl mb-2 font-normal" 
-                >{activeSpace.name}</h3>
-                <p 
-                  className="text-white/90 mb-4"
-                >{activeSpace.description}</p>
-                <div 
-                  className="flex items-center text-white/90 mb-2"
-                >
-                  <Users className="h-4 w-4 mr-2 text-cream-50" />
-                  <span>Up to {activeSpace.capacity} guests</span>
-                </div>
+          {/* Left sidebar - Venue selector */}
+          <div className="lg:w-1/3">
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-olive-100 lg:sticky lg:top-24">
+              <h3 className="text-xl text-olive-800 mb-6">Select a Venue</h3>
+              <div className="space-y-4">
+                {spaces.map((space) => (
+                  <button
+                    key={space.id}
+                    onClick={() => setActiveSpace(space)}
+                    className={`w-full text-left p-4 rounded-lg transition-all duration-300 border-2 ${
+                      activeSpace.id === space.id
+                        ? 'border-olive-600 bg-olive-50 shadow-md'
+                        : 'border-transparent bg-gray-50 hover:bg-olive-50 hover:border-olive-200'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="text-olive-800 font-medium">{space.name}</h4>
+                        <p className="text-dark-600 text-sm mt-1">Up to {space.capacity} guests</p>
+                      </div>
+                      <ChevronRight className={`h-5 w-5 transition-transform duration-300 ${
+                        activeSpace.id === space.id ? 'text-olive-600 transform rotate-90' : 'text-gray-400'
+                      }`} />
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
           
-          <div className="lg:w-1/2">
-            <div className="space-y-4">
-              {spaces.map((space) => (
-                <div 
-                  key={space.id}
-                  className={`p-5 rounded-lg cursor-pointer transition-all duration-300 ${activeSpace.id === space.id ? 'bg-[#f5f5f5] border-l-4 border-olive-600 shadow-md' : 'hover:bg-[#f5f5f5] hover:shadow-sm'}`}
-                  onClick={() => setActiveSpace(space)}
-                >
-                  <div className="flex justify-between items-center">
-                    <h4 
-                      className={`text-lg transition-colors duration-300 ${activeSpace.id === space.id ? 'text-olive-800' : 'text-dark-600'} !font-normal`}
-                    >{space.name}</h4>
-                    <ChevronRight className={`h-5 w-5 transition-transform duration-300 ${activeSpace.id === space.id ? 'rotate-90 text-olive-600' : 'text-dark-400'}`} />
+          {/* Right content - Active venue details */}
+          <div className="lg:w-2/3">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-olive-100 transform transition-all duration-500">
+              <div className="relative h-80 overflow-hidden group">
+                <img 
+                  src={activeSpace.image} 
+                  alt={activeSpace.name}
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-olive-800/70 via-olive-700/30 to-transparent"></div>
+                <div className="absolute bottom-6 left-6 text-white">
+                  <h3 className="text-2xl font-light mb-2">{activeSpace.name}</h3>
+                  <div className="flex items-center">
+                    <Users className="h-5 w-5 mr-2" />
+                    <span>Up to {activeSpace.capacity} guests</span>
                   </div>
-                  {activeSpace.id === space.id && (
-                    <p 
-                      className="mt-2 text-dark-600 animate-fade-in"
-                    >
-                      {space.description.split('.')[0]}.
-                    </p>
-                  )}
                 </div>
-              ))}
-            </div>
-            
-            <div className="mt-10 bg-[#fafafa] p-6 rounded-lg w-full border border-olive-100">
-              <h4 
-                className="text-olive-800 text-xl mb-4 !font-normal"
-              >Why Our Venues Stand Apart</h4>
-              <div className="space-y-3">
-                {[
-                  "All venues are part of our iconic property - no need for multiple location coordination",
-                  "Backup options for every outdoor space in case of weather changes",
-                  "Exclusive use of selected venues for complete privacy",
-                  "Photography-optimized settings with perfect lighting throughout the day",
-                  "Seamless transitions between ceremony, cocktail hour, and reception spaces"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-start group">
-                    <Check className="h-5 w-5 text-olive-600 mr-3 mt-1 flex-shrink-0 transition-colors duration-300 group-hover:text-olive-500" />
-                    <span 
-                      className="text-dark-600 transition-colors duration-300 group-hover:text-dark-700"
-                    >{item}</span>
-                  </div>
-                ))}
+              </div>
+              
+              <div className="p-8">
+                <p className="text-dark-600 leading-relaxed mb-8">
+                  {activeSpace.description}
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link 
+                    href="/gallery"
+                    className="flex-1 bg-olive-600 hover:bg-olive-500 text-white px-6 py-3 rounded-full text-center transition-colors duration-300 transform hover:scale-105 shadow-md"
+                  >
+                    View Gallery
+                  </Link>
+                  <button className="flex-1 border-2 border-olive-600 text-olive-600 hover:bg-olive-600 hover:text-white px-6 py-3 rounded-full transition-colors duration-300 transform hover:scale-105">
+                    Learn More
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -278,36 +256,40 @@ const WeddingSpacesSection = () => {
 };
 
 // Experience Section Component
-const ExperienceSection = () => {
+export const ExperienceSection = () => {
   const experiences = [
     {
-      icon: <Utensils className="h-8 w-8 text-olive-600 group-hover:text-olive-500 transition-colors duration-300" />,
-      title: "Island-Inspired Culinary Excellence",
-      description: "Our award-winning chefs create customized menus featuring locally-sourced ingredients that showcase Hawaii's unique flavors."
+      icon: Utensils,
+      title: "Culinary Excellence",
+      description: "Farm-to-table cuisine featuring the finest local ingredients, crafted by our award-winning culinary team.",
+      features: ["Locally-sourced ingredients", "Custom menu design", "Dietary accommodations", "Wine pairing expertise"]
     },
     {
-      icon: <PalmtreeIcon className="h-8 w-8 text-olive-500 group-hover:text-olive-400 transition-colors duration-300" />,
-      title: "West Maui's Premier Location",
-      description: "As a beloved island institution since 1991, we offer unmatched connections to Maui's best vendors and services."
+      icon: Heart,
+      title: "Personalized Service",
+      description: "Dedicated wedding coordination ensuring every detail reflects your unique love story and vision.",
+      features: ["Personal wedding coordinator", "Custom décor planning", "Timeline management", "Day-of coordination"]
     },
     {
-      icon: <Camera className="h-8 w-8 text-olive-500 group-hover:text-olive-400 transition-colors duration-300" />,
-      title: "Instagram-Worthy Backdrops",
-      description: "Every corner of our venue is designed to create breathtaking photo opportunities from sunrise to sunset."
+      icon: Camera,
+      title: "Stunning Photography",
+      description: "Breathtaking backdrops and golden hour lighting create the perfect setting for your wedding photos.",
+      features: ["Multiple photo locations", "Golden hour sessions", "Bridal party spaces", "Sunset ceremony timing"]
     },
     {
-      icon: <Heart className="h-8 w-8 text-olive-500 group-hover:text-olive-400 transition-colors duration-300" />,
-      title: "Comprehensive Wedding Concierge",
-      description: "Our dedicated team handles everything from vendor coordination to guest transportation and accommodations."
+      icon: Sparkles,
+      title: "Magical Atmosphere",
+      description: "From sunset ceremonies to starlit receptions, we create an enchanting ambiance for your celebration.",
+      features: ["Sunset ceremony views", "Ambient lighting design", "Tropical garden settings", "Ocean backdrop"]
     }
   ];
 
   return (
-    <section id="experience" className="py-24 relative" style={{ background: 'radial-gradient(circle, #f3f1ee 0%, #e2dbcf 100%)' }}>
-      {/* Wave pattern overlay */}
+    <section id="experience" className="py-24 bg-gradient-to-b from-[#f7f4f1] to-cream-50 relative">
+      {/* Diamond pattern overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="h-full w-full" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21.184 20c.357-.13.72-.264.888-.14 1.055.793 1.603 1.257 1.656.233.231-.91-.562-1.518-1.424-2.226-.872-.707-1.75-1.412-2.628-2.12L2.792 0 0 3.294l2.02 1.621 5.877 4.72-.708.708L8 9.13l-.708.708-1.412.007.808-.807-3.34-2.69-.708.708-1.412 1.412 2.82 2.26.42-.422 2.84-2.125.565.566.572-.572 1.412 1.411-1.412 1.412-.571-.571-2.126 2.126L0 16.27l.808.808L0 18.9l1.414-1.413L0 19.314v.687h.02L0 21h4.2l3.54-3.54L10.414 14l1.413-1.414-1.413-1.414-2.12-2.122 2.12-2.12-1.413-1.415-2.121 2.122-2.122-2.122L2.121 7.071l2.121 2.122 2.122-2.122 1.414 1.414-2.121 2.121 2.12 2.121 2.122-2.12 2.12 2.12 2.122-2.12 2.121 2.12 2.121-2.12 2.121 2.12 1.414-1.413-2.12-2.12 2.12-2.123 4.243 4.242 2.121-2.12 1.414 1.413 2.121-2.12-1.414-1.415-2.12 2.121-2.121-2.12-2.121 2.12L18.363 7.9l-2.121 2.121-1.414-1.414L9.071 3.35l-4.95 4.95-1.414-1.413 4.95-4.95L2.121 6.364 3.536 7.78l2.12-2.122 1.415 1.414-2.121 2.121 2.12 2.121 2.122-2.12 2.12 2.12 2.122-2.12 2.12 2.12 4.243-4.242-2.121-2.122 2.121-2.121L21.78 1.818l-5.657 5.656-1.414-1.414 5.657-5.656-2.121-2.122-2.829 2.83-1.414-1.414 2.829-2.83-2.121-2.12L6.364 2.121 4.95.707l4.242-4.243L21.779 9.05l1.407-1.407L24.592 9.05 21.184 20z' fill='%235F653C' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%235F653C' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M20 20L0 0h20v20zM0 20l20 20V20H0z'/%3E%3C/g%3E%3C/svg%3E")`,
         }}></div>
       </div>
       
@@ -317,26 +299,33 @@ const ExperienceSection = () => {
           style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
         >
           <span className="inline-block relative" style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
-            The Plantation House Experience
+            The Complete Wedding Experience
             <span className="absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-olive-600"></span>
           </span>
         </h2>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 force-gill-sans">
-          {experiences.map((item, index) => (
-            <div key={index} className="group bg-[#fafafa] p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-102 hover:translate-y-[-4px] border border-olive-100 gill-sans-card">
-              <div className="flex justify-center mb-4">
-                {item.icon}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {experiences.map((experience, index) => (
+            <div key={index} className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-olive-100 group">
+              <div className="flex items-center mb-6">
+                <div className="bg-olive-100 rounded-full p-3 mr-4 group-hover:bg-olive-200 transition-colors duration-300">
+                  <experience.icon className="h-8 w-8 text-olive-600" />
+                </div>
+                <h3 className="text-xl text-olive-800 font-medium">{experience.title}</h3>
               </div>
-              <h3 
-                className="text-xl text-center text-olive-800 mb-3 group-hover:text-olive-700 transition-colors duration-300"
-                style={{ 
-                  fontFamily: '"gill-sans-nova", "Gill Sans Nova", "Gill Sans", sans-serif !important',
-                  fontStyle: 'normal !important',
-                  fontWeight: '400 !important'
-                }}
-              >{item.title}</h3>
-              <p className="text-center text-dark-600">{item.description}</p>
+              
+              <p className="text-dark-600 mb-6 leading-relaxed">
+                {experience.description}
+              </p>
+              
+              <ul className="space-y-2">
+                {experience.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-center text-dark-600">
+                    <Check className="h-4 w-4 text-olive-600 mr-3 flex-shrink-0" />
+                    <span className="text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
@@ -345,97 +334,87 @@ const ExperienceSection = () => {
   );
 };
 
-// Wedding Concierge Section
-const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
+// Wedding Concierge Section Component
+export const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
   return (
-    <section 
-      id="concierge" 
-      className="py-24 relative overflow-hidden" 
-      style={{ 
-        background: 'linear-gradient(to bottom right, #f3f1ee, #e2dbcf)',
-        backgroundImage: 'linear-gradient(to bottom right, #f3f1ee, #e2dbcf)'
-      }}
-    >
+    <section id="concierge" className="py-24 bg-gradient-to-b from-cream-50 to-white relative">
+      {/* Hexagonal pattern overlay */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div className="h-full w-full" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 28L14 14h28l-14 14z' fill='%235F653C' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+        }}></div>
+      </div>
+      
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row bg-white rounded-xl overflow-hidden shadow-lg border border-olive-100">
-            <div className="lg:w-2/5 h-96 lg:h-auto overflow-hidden">
-              <img 
-                src="https://www.theplantationhouse.com/wp-content/uploads/2023/05/Photo-8.jpg"
-                alt="Wedding Concierge Service"
-                className="w-full h-full object-cover object-center"
-              />
+        <div className="max-w-4xl mx-auto">
+          <h2 
+            className="text-3xl md:text-4xl text-olive-800 text-center mb-8 relative font-light italic"
+            style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+          >
+            <span className="inline-block relative" style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
+              Your Maui Wedding Concierge
+              <span className="absolute -bottom-2 left-1/4 right-1/4 h-0.5 bg-olive-600"></span>
+            </span>
+          </h2>
+          
+          <p className="text-center text-dark-600 text-lg mb-12 leading-relaxed">
+            Beyond our stunning venues, we unlock the very best of Maui for your celebration. Our deep island connections and three decades of relationships ensure your wedding extends far beyond our grounds.
+          </p>
+          
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-olive-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
+                <div className="flex items-start mb-3">
+                  <Building className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
+                  <h3 className="text-olive-800 !font-normal">Premium Accommodations</h3>
+                </div>
+                <p className="text-dark-600 text-sm">
+                  Exclusive rates and room blocks at Maui's finest resorts and hotels for your guests.
+                </p>
+              </div>
+              
+              <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
+                <div className="flex items-start mb-3">
+                  <Plane className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
+                  <h3 className="text-olive-800 !font-normal">Adventure Experiences</h3>
+                </div>
+                <p className="text-dark-600 text-sm">
+                  Curated activities from sunset sails to helicopter tours, creating unforgettable memories.
+                </p>
+              </div>
+              
+              <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
+                <div className="flex items-start mb-3">
+                  <Trophy className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
+                  <h3 className="text-olive-800 !font-normal">Vendor Excellence</h3>
+                </div>
+                <p className="text-dark-600 text-sm">
+                  Connections to Maui's most talented photographers, florists, and entertainment providers.
+                </p>
+              </div>
+              
+              <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
+                <div className="flex items-start mb-3">
+                  <PalmtreeIcon className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
+                  <h3 className="text-olive-800 !font-normal">Island Connection</h3>
+                </div>
+                <p className="text-dark-600 text-sm">
+                  Access to Maui's best vendors, exclusive experiences, and local expertise through our extensive network.
+                </p>
+              </div>
             </div>
             
-            <div className="lg:w-3/5 p-8 lg:p-12">
-              <h2 
-                className="text-3xl md:text-4xl text-olive-800 mb-6 relative font-light italic"
-                style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif !important', fontStyle: 'italic !important' }}
+            <div className="flex flex-col sm:flex-row items-center justify-between p-5 bg-[#fcfcfb] rounded-lg border border-olive-100 force-gill-sans">
+              <div className="text-dark-700 mb-4 sm:mb-0">
+                <p className="!font-normal">Ready to meet your Wedding Concierge?</p>
+                <p className="text-dark-600 text-sm mt-1">Book a tour today and begin your planning journey</p>
+              </div>
+              <button 
+                onClick={onScheduleTour}
+                className="bg-olive-600 hover:bg-olive-500 text-white px-5 py-2 rounded-full !font-normal transition-colors duration-300 shadow-md"
               >
-                <span className="inline-block relative" style={{ fontFamily: '"palatino-linotype", "Palatino Linotype", "Palatino", serif', fontStyle: 'italic' }}>
-                  Your Personal Wedding Concierge
-                  <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-olive-600"></span>
-                </span>
-              </h2>
-              
-              <p className="text-dark-600 text-lg mb-8 force-gill-sans">
-                When you choose The Plantation House, you don't just get a venue - you gain a dedicated Wedding Concierge who leverages our 30+ years as a West Maui institution to create your perfect celebration. Our deep island connections mean unparalleled service for you and your guests.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 force-gill-sans">
-                <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
-                  <div className="flex items-start mb-3">
-                    <Building className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
-                    <h3 className="text-olive-800 !font-normal">Venue Coordination</h3>
-                  </div>
-                  <p className="text-dark-600 text-sm">
-                    Seamless management of all venue spaces, setup coordination, and weather contingency planning.
-                  </p>
-                </div>
-                
-                <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
-                  <div className="flex items-start mb-3">
-                    <Plane className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
-                    <h3 className="text-olive-800 !font-normal">Guest Services</h3>
-                  </div>
-                  <p className="text-dark-600 text-sm">
-                    Hotel room blocks, transportation arrangement, and local activity recommendations for all guests.
-                  </p>
-                </div>
-                
-                <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
-                  <div className="flex items-start mb-3">
-                    <CalendarClock className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
-                    <h3 className="text-olive-800 !font-normal">Event Timeline</h3>
-                  </div>
-                  <p className="text-dark-600 text-sm">
-                    Detailed planning of your entire wedding day and coordination with all vendors.
-                  </p>
-                </div>
-                
-                <div className="bg-[#fcfcfb] rounded-lg p-5 border border-olive-100">
-                  <div className="flex items-start mb-3">
-                    <PalmtreeIcon className="h-6 w-6 text-olive-600 mr-3 flex-shrink-0" />
-                    <h3 className="text-olive-800 !font-normal">Island Connection</h3>
-                  </div>
-                  <p className="text-dark-600 text-sm">
-                    Access to Maui's best vendors, exclusive experiences, and local expertise through our extensive network.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row items-center justify-between p-5 bg-[#fcfcfb] rounded-lg border border-olive-100 force-gill-sans">
-                <div className="text-dark-700 mb-4 sm:mb-0">
-                  <p className="!font-normal">Ready to meet your Wedding Concierge?</p>
-                  <p className="text-dark-600 text-sm mt-1">Book a tour today and begin your planning journey</p>
-                </div>
-                <button 
-                  onClick={onScheduleTour}
-                  className="bg-olive-600 hover:bg-olive-500 text-white px-5 py-2 rounded-full !font-normal transition-colors duration-300 shadow-md"
-                >
-                  Schedule Now
-                </button>
-              </div>
+                Schedule Now
+              </button>
             </div>
           </div>
         </div>
@@ -445,7 +424,7 @@ const WeddingConciergeSection = ({ onScheduleTour }: { onScheduleTour: () => voi
 };
 
 // Testimonial Section Component
-const TestimonialSection = () => {
+export const TestimonialSection = () => {
   return (
     <section className="py-24 bg-gradient-to-b from-cream-50 to-white relative">
       {/* Dotted pattern overlay */}
@@ -481,7 +460,7 @@ const TestimonialSection = () => {
 };
 
 // Gallery Section Preview Component
-const GallerySectionPreview = () => {
+export const GallerySectionPreview = () => {
   return (
     <section id="gallery-preview" className="py-24 bg-gradient-to-b from-cream-50 to-white relative">
       {/* Dotted pattern overlay */}
@@ -491,8 +470,7 @@ const GallerySectionPreview = () => {
         }}></div>
       </div>
       
-      {/* Add style tag for global styles */}
-      <style>{globalStyles}</style>
+
       
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-3xl md:text-4xl text-olive-800 text-center mb-16 relative font-light italic"
@@ -556,7 +534,7 @@ const GallerySectionPreview = () => {
         
         <div className="text-center mt-12">
           <Link 
-            to="/gallery"
+            href="/gallery"
             className="inline-flex items-center bg-olive-600 hover:bg-olive-500 text-white px-6 py-3 rounded-full transition-colors duration-300 transform hover:scale-105 shadow-md"
           >
             <Camera className="h-5 w-5 mr-2" />
@@ -567,49 +545,4 @@ const GallerySectionPreview = () => {
       </div>
     </section>
   );
-};
-
-// HomePage Component 
-const HomePage = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
-  return (
-    <div className="bg-white">
-      <Navigation />
-      <HeroSection onScheduleTour={onScheduleTour} />
-      <IntroductionSection />
-      <TrustedVenueSection />
-      <WeddingSpacesSection />
-      <ExperienceSection />
-      <GallerySectionPreview />
-      <WeddingConciergeSection onScheduleTour={onScheduleTour} />
-      <TestimonialSection />
-      <ContactSection />
-      <Footer />
-      <FloatingCTA onScheduleTour={onScheduleTour} />
-    </div>
-  );
-};
-
-// App Component
-function App() {
-  const [showBookingModal, setShowBookingModal] = useState(false);
-  
-  const handleScheduleTour = () => {
-    setShowBookingModal(true);
-  };
-  
-  return (
-    <Router>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<HomePage onScheduleTour={handleScheduleTour} />} />
-        <Route path="/gallery" element={<GalleryPage />} />
-      </Routes>
-      <BookingModal 
-        isOpen={showBookingModal} 
-        onClose={() => setShowBookingModal(false)} 
-      />
-    </Router>
-  );
-}
-
-export default App;
+}; 

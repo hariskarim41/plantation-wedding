@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Gill Sans Nova font family styles */
+.gill-sans-nova-book {
+  font-family: 'gill-sans-nova', 'Gill Sans Nova Book', 'Gill Sans Nova', 'Gill Sans', sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+}
+
 /* Global font styles with improved browser compatibility */
 @layer base {
   /* All headings use Palatino Linotype italic */

@@ -4,6 +4,7 @@ import { Calendar, Phone, X } from 'lucide-react';
 const FloatingCTA = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   
   const handleScroll = () => {
     // Show after scrolling 300px
@@ -15,6 +16,8 @@ const FloatingCTA = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
   };
   
   const scrollToContact = () => {
+    if (!isClient) return;
+    
     const contactSection = document.getElementById('contact');
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
@@ -23,12 +26,18 @@ const FloatingCTA = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
   };
   
   useEffect(() => {
+    setIsClient(true);
+    
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
   
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <>
       {/* Toggle Button */}
