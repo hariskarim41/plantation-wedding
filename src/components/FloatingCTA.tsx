@@ -82,9 +82,9 @@ const FloatingCTA = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
             
             <div className="space-y-4 mb-8">
               <div className="bg-cream-50 p-5 rounded-lg border border-olive-100">
-                <h4 className="text-olive-800 font-medium mb-2">Schedule a Tour</h4>
+                <h4 className="text-olive-800 font-medium mb-2">Plan Your Event</h4>
                 <p className="text-dark-600 text-sm mb-4">
-                  Experience our stunning venues in person and start planning your dream Maui wedding
+                  Tell us about your vision and let our team help you plan your dream Maui wedding
                 </p>
                 <button 
                   onClick={() => {
@@ -94,7 +94,7 @@ const FloatingCTA = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
                   className="w-full bg-olive-600 hover:bg-olive-500 text-white px-4 py-3 rounded-lg font-medium transition-colors duration-300"
                 >
                   <Calendar className="h-5 w-5 mr-2 inline-block" />
-                  <span>Schedule Your Tour</span>
+                  <span>Request Event Info</span>
                 </button>
               </div>
               

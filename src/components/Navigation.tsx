@@ -174,7 +174,7 @@ const Navigation = () => {
               onClick={() => document.getElementById('schedule-button')?.click()}
               className="bg-olive-600 hover:bg-olive-500 text-white px-6 py-3 rounded-full font-bold text-lg transition-colors duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
             >
-              Schedule a Tour
+              Tell Us About Your Dream Wedding
             </button>
           </div>
           
@@ -319,7 +319,7 @@ const Navigation = () => {
                   }, 300);
                 }}
               >
-                Schedule a Tour
+                Tell Us About Your Dream Wedding
               </button>
             </div>
           </div>

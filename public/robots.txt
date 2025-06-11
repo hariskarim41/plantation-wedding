@@ -3,6 +3,6 @@ Allow: /
 Disallow: /api/
 Disallow: /_next/
 Disallow: /node_modules/
-
+ 
 # Sitemap
 Sitemap: https://yourdomain.com/sitemap.xml 

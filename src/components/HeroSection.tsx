@@ -28,7 +28,7 @@ const HeroSection = ({ onScheduleTour }: { onScheduleTour: () => void }) => {
           onClick={onScheduleTour}
           className="bg-olive-600 hover:bg-olive-500 text-white px-8 py-3 rounded-full font-medium text-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 animate-fade-in-delay-2"
         >
-          Schedule Your Tour
+          Tell Us About Your Dream Wedding
         </button>
       </div>
       <div className="absolute bottom-10 left-0 right-0 flex justify-center z-10 animate-bounce">
